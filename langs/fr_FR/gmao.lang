@@ -19,6 +19,6 @@
 
 # Data - Donnée
 ModuleGMAOName      = GMAO
-ModuleGMAODesc      = Création d'URLs raccourcies pour YOURLS et Dolibarr
-GMAODescription     = Création d'URLs raccourcies pour YOURLS et Dolibarr
-GMAODescriptionLong = Création d'URLs raccourcies pour YOURLS et Dolibarr
+ModuleGMAODesc      = Gestion de maintenance au travers des tickets
+GMAODescription     = Gestion de maintenance au travers des tickets
+GMAODescriptionLong = Gestion de maintenance au travers des tickets
