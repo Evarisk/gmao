@@ -80,7 +80,7 @@ class ActionsGmao
                 $out  = '<tr><td class="titlefield">' . $langs->trans('PublicInterface') . ' <a href="' . $publicInterfaceUrl . '" target="_blank"><i class="fas fa-qrcode"></i></a>';
                 $out .= showValueWithClipboardCPButton($publicInterfaceUrl, 0, '&nbsp;');
                 $out .= '</td>';
-                $out .= '<td>' . saturne_show_medias_linked('ticket', $conf->ticket->multidir_output[$conf->entity] . '/' . $object->ref . '/qrcode/', 'small', 1, 0, 0, 0, 80, 80, 0, 0, 1, 'ticket/'. $object->ref . '/qrcode/', $object, '', 0, 0) . '</td></tr>'; ?>
+                $out .= '<td>' . saturne_show_medias_linked('ticket', $conf->ticket->multidir_output[$conf->entity] . '/' . $object->ref . '/qrcode/', 'small', 1, 0, 0, 0, 80, 80, 0, 0, 0, $object->ref . '/qrcode/', $object, '', 0, 0) . '</td></tr>'; ?>
 
                 <script>
                     jQuery('.fichehalfleft table tr:first-child').first().before(<?php echo json_encode($out); ?>)
