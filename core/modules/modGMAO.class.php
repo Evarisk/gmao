@@ -117,14 +117,19 @@ class modGMAO extends DolibarrModules
             // Set this to relative path of js file if module must load a js on all pages
             'js' => [],
             // Set here all hooks context managed by module. To find available hook context, make a "grep -r '>initHooks(' *" on source code. You can also set hook context to 'all'
-            'hooks' => [],
+            'hooks' => [
+                'ticketcard'
+            ],
             // Set this to 1 if features of module are opened to external users
             'moduleforexternal' => 0
         ];
 
         // Data directories to create when module is enabled
         // Example: this->dirs = array("/gmao/temp","/gmao/subdir");
-        $this->dirs = ['/gmao/temp'];
+        $this->dirs = [
+            '/gmao/temp',
+            '/ecm/gmao/gmaoticketdocument'
+        ];
 
         // Config pages. Put here list of php page, stored into gmao/admin directory, to use to set up module
         $this->config_page_url = ['setup.php@gmao'];
@@ -143,7 +148,7 @@ class modGMAO extends DolibarrModules
 
         // Prerequisites
         $this->phpmin                = [7, 4]; // Minimum version of PHP required by module
-        $this->need_dolibarr_version = [16, 0]; // Minimum version of Dolibarr required by module
+        $this->need_dolibarr_version = [17, 0]; // Minimum version of Dolibarr required by module
 
         // Messages at activation
         $this->warnings_activation     = []; // Warning to show when we activate module. array('always'='text') or array('FR'='textfr','MX'='textmx'...)
@@ -163,6 +168,19 @@ class modGMAO extends DolibarrModules
             $i++ => ['GMAO_DB_VERSION', 'chaine', $this->version, '', 0, 'current'],
             $i++ => ['GMAO_SHOW_PATCH_NOTE', 'integer', 1, '', 0, 'current'],
             $i++ => ['GMAO_ADVANCED_TRIGGER', 'integer', 1, '', 0, 'current'],
+
+            // CONST GMAO DOCUMENTS
+            $i++ => ['GMAO_AUTOMATIC_PDF_GENERATION', 'integer', 0, '', 0, 'current'],
+            $i++ => ['GMAO_MANUAL_PDF_GENERATION', 'integer', 0, '', 0, 'current'],
+
+            // CONST GMAO TICKET DOCUMENT
+            $i++ => ['GMAO_GMAOTICKETDOCUMENT_ADDON', 'chaine', 'mod_gmaoticketdocument_standard', '', 0, 'current'],
+            $i++ => ['GMAO_GMAOTICKETDOCUMENT_ADDON_ODT_PATH', 'chaine', 'DOL_DOCUMENT_ROOT/custom/gmao/documents/doctemplates/gmaoticketdocument/', '', 0, 'current'],
+            $i++ => ['GMAO_GMAOTICKETDOCUMENT_CUSTOM_ADDON_ODT_PATH', 'chaine', 'DOL_DATA_ROOT' . (($conf->entity == 1 ) ? '/' : '/' . $conf->entity . '/') . 'ecm/gmao/gmaoticketdocument/', '', 0, 'current'],
+            $i++ => ['GMAO_GMAOTICKETDOCUMENT_DEFAULT_MODEL', 'chaine', 'gmaoticketdocument_odt', '', 0, 'current'],
+
+            // CONST DOLIBARR
+            $i => ['MAIN_ODT_AS_PDF', 'chaine', 'libreoffice', '', 0, 'current']
         ];
 
         // Some keys to add into the overwriting translation tables
@@ -233,6 +251,11 @@ class modGMAO extends DolibarrModules
 
         dolibarr_set_const($this->db, 'GMAO_VERSION', $this->version, 'chaine', 0, '', $conf->entity);
         dolibarr_set_const($this->db, 'GMAO_DB_VERSION', $this->version, 'chaine', 0, '', $conf->entity);
+
+        // Document models
+        delDocumentModel('gmaoticketdocument_odt', 'gmaoticketdocument');
+
+        addDocumentModel('gmaoticketdocument_odt', 'gmaoticketdocument', 'ODT templates', 'GMAO_GMAOTICKETDOCUMENT_ADDON_ODT_PATH');
 
         return $this->_init($sql, $options);
     }
