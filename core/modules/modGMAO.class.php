@@ -117,7 +117,9 @@ class modGMAO extends DolibarrModules
             // Set this to relative path of js file if module must load a js on all pages
             'js' => [],
             // Set here all hooks context managed by module. To find available hook context, make a "grep -r '>initHooks(' *" on source code. You can also set hook context to 'all'
-            'hooks' => [],
+            'hooks' => [
+                'ticketcard'
+            ],
             // Set this to 1 if features of module are opened to external users
             'moduleforexternal' => 0
         ];
@@ -163,6 +165,8 @@ class modGMAO extends DolibarrModules
             $i++ => ['GMAO_DB_VERSION', 'chaine', $this->version, '', 0, 'current'],
             $i++ => ['GMAO_SHOW_PATCH_NOTE', 'integer', 1, '', 0, 'current'],
             $i++ => ['GMAO_ADVANCED_TRIGGER', 'integer', 1, '', 0, 'current'],
+            $i++ => ['GMAO_ENABLE_TICKET_PROPOSAL', 'integer', 0, '', 0, 'current'],
+            $i   => ['GMAO_ENABLE_TICKET_PROPOSAL_GMAO', 'integer', 1, '', 0, 'current'],
         ];
 
         // Some keys to add into the overwriting translation tables
@@ -211,6 +215,28 @@ class modGMAO extends DolibarrModules
         $this->rights[$r][1] = $langs->transnoentities('ReadAdminPage', 'GMAO');
         $this->rights[$r][4] = 'adminpage';
         $this->rights[$r][5] = 'read';
+
+        // Main menu entries to add
+        $this->menu = [];
+        $r          = 0;
+
+        // Add here entries to declare new menus
+        // TOOLS MENU
+        $this->menu[$r++] = [
+            'fk_menu'  => 'fk_mainmenu=tools',
+            'type'     => 'left',
+            'titre'    => 'GMAO',
+            'prefix'   => '<i class="fas fa-toolbox pictofixedwidth" style="color: #d35968;"></i>',
+            'mainmenu' => 'tools',
+            'leftmenu' => 'gmao',
+            'url'      => '/gmao/admin/setup.php',
+            'langs'    => 'gmao@gmao',
+            'position' => 1000 + $r,
+            'enabled'  => '$conf->gmao->enabled',
+            'perms'    => '$user->rights->gmao->read',
+            'target'   => '',
+            'user'     => 0,
+        ];
     }
 
     /**

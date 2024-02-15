@@ -22,3 +22,23 @@ ModuleGMAOName      = GMAO
 ModuleGMAODesc      = Création d'URLs raccourcies pour YOURLS et Dolibarr
 GMAODescription     = Création d'URLs raccourcies pour YOURLS et Dolibarr
 GMAODescriptionLong = Création d'URLs raccourcies pour YOURLS et Dolibarr
+
+#
+# Config page - Page d'administration
+#
+
+# Setup - Réglages
+ProposalService                     = Service de la proposition commerciale GMAO
+EnableTicketProposal                = Activer la création d'une proposition commerciale depuis un ticket
+EnableTicketProposalDescription     = Cette option permet de créer une proposition commerciale depuis un ticket en récupérant le tiers et le projet associé au ticket
+EnableTicketProposalGMAO            = Activer la création d'une proposition commerciale de maintenance depuis un ticket
+EnableTicketProposalGMAODescription = Cette option permet de créer une proposition commerciale depuis un ticket en récupérant le tiers et le projet associé au ticket.<br>De plus, si l'option du service de la proposition commerciale est configurée, elle va ajouter une ligne de service directement sur la proposition.
+
+
+
+#
+# GMAO
+#
+
+# Data - Donnée
+CreateGMAO = Créer une proposition de maintenance
