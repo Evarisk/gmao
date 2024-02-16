@@ -29,4 +29,5 @@ GMAODescriptionLong = Création d'URLs raccourcies pour YOURLS et Dolibarr
 
 # Data - Donnée
 gmaoticketdocument.odt = Document de maintenance
-gmaoticketdocument     = Document de maintenance
+gmaoticketdocument     = document de maintenance
+GMAOTicketDocument     = Document de maintenance

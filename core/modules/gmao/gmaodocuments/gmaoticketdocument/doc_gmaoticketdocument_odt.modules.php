@@ -91,6 +91,7 @@ class doc_gmaoticketdocument_odt extends SaturneDocumentModel
 
         $object = $moreParam['object'];
 
+        $outputLangs->load('gmao@gmao');
         $thirdParty = new Societe($this->db);
         $userAssign = new User($this->db);
 

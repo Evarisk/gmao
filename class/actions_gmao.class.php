@@ -168,4 +168,26 @@ class ActionsGmao
 
         return 0; // or return 1 to replace standard code
     }
+
+    /**
+     * Overloading the saturneAdminDocumentData function : replacing the parent's function with the one below
+     *
+     * @param  array $parameters Hook metadatas (context, etc...)
+     * @return int               0 < on error, 0 on success, 1 to replace standard code
+     */
+    public function saturneAdminDocumentData(array $parameters): int
+    {
+        // Do something only for the current context
+        if (strpos($parameters['context'], 'gmaoadmindocuments') !== false) {
+            $types = [
+                'GMAOTicketDocument' => [
+                    'documentType' => 'gmaoticketdocument',
+                    'picto'        => 'fontawesome_fa-fa-ticket-alt_fas_#d35968'
+                ]
+            ];
+            $this->results = $types;
+        }
+
+        return 0; // or return 1 to replace standard code
+    }
 }
