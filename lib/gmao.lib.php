@@ -38,6 +38,11 @@ function gmao_admin_prepare_head(): array
     $h    = 0;
     $head = [];
 
+    $head[$h][0] = dol_buildpath('/saturne/admin/documents.php?module_name=GMAO', 1);
+    $head[$h][1] = $conf->browser->layout != 'phone' ? '<i class="fas fa-file-alt pictofixedwidth"></i>' . $langs->trans('YourDocuments') : '<i class="fas fa-file-alt"></i>';
+    $head[$h][2] = 'documents';
+    $h++;
+
     $head[$h][0] = dol_buildpath('/gmao/admin/setup.php', 1);
     $head[$h][1] = $conf->browser->layout != 'phone' ? '<i class="fas fa-cog pictofixedwidth"></i>' . $langs->trans('ModuleSettings') : '<i class="fas fa-cog"></i>';
     $head[$h][2] = 'settings';

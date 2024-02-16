@@ -45,3 +45,14 @@ EnableTicketProposalGMAODescription = Cette option permet de créer une proposit
 # Data - Donnée
 CreateGMAO                 = Créer une proposition de maintenance
 ErrorConfigProposalService = Impossible de créer une proposition de maintenance sans configurer le service de la proposition commerciale GMAO
+
+
+
+#
+# GMAOTicketDocument - Document de maintenance
+#
+
+# Data - Donnée
+gmaoticketdocument.odt = Document de maintenance
+gmaoticketdocument     = document de maintenance
+GMAOTicketDocument     = Document de maintenance
