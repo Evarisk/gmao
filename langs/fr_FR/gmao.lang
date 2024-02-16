@@ -41,4 +41,5 @@ EnableTicketProposalGMAODescription = Cette option permet de créer une proposit
 #
 
 # Data - Donnée
-CreateGMAO = Créer une proposition de maintenance
+CreateGMAO                 = Créer une proposition de maintenance
+ErrorConfigProposalService = Impossible de créer une proposition de maintenance sans configurer le service de la proposition commerciale GMAO

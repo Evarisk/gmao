@@ -142,7 +142,13 @@ class ActionsGmao
                 print dolGetButtonAction('', img_picto('', 'fa-file-signature') . ' ' . $langs->trans('AddProp'), 'default', dol_buildpath('/comm/propal/card.php?action=create&socid=' . $object->socid . '&projectid=' . $object->fk_project, 1), '', $user->rights->propale->creer);
             }
             if (getDolGlobalInt('GMAO_ENABLE_TICKET_PROPOSAL_GMAO')) {
-                print dolGetButtonAction('', img_picto('', 'fa-file-signature') . ' ' . $langs->trans('CreateGMAO'), 'default', $_SERVER['PHP_SELF'] . '?action=create_gmao&id=' . $object->id . '&token=' . newToken(), '', $user->rights->propale->creer);
+                if (getDolGlobalInt('GMAO_PROPOSAL_SERVICE_ID') > 0 && $object->fk_soc > 0) {
+                    print dolGetButtonAction('', img_picto('', 'fa-file-signature') . ' ' . $langs->trans('CreateGMAO'), 'default', $_SERVER['PHP_SELF'] . '?action=create_gmao&id=' . $object->id . '&token=' . newToken(), '', $user->rights->propale->creer);
+                } elseif (empty($object->fk_soc)) {
+                    print '<span class="butActionRefused classfortooltip" title="' . dol_escape_htmltag($langs->trans('ErrorFieldRequired', $langs->trans($object->fields['fk_soc']['label']))) . '">' . img_picto('', 'fa-file-signature') . ' ' . $langs->trans('CreateGMAO') . '</span>';
+                } else {
+                    print '<span class="butActionRefused classfortooltip" title="' . dol_escape_htmltag($langs->trans('ErrorConfigProposalService')) . '">' . img_picto('', 'fa-file-signature') . ' ' . $langs->trans('CreateGMAO') . '</span>';
+                }
             }
         }
 
