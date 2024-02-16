@@ -99,32 +99,6 @@ class ActionsGmao
         global $conf, $langs, $user;
 
         if (strpos($parameters['context'], 'ticketcard') !== false) {
-            if ($action == 'builddoc' && strstr(GETPOST('model'), 'gmaoticketdocument_odt')) {
-                require_once __DIR__ . '/gmaodocuments/gmaoticketdocument.class.php';
-
-                $document = new GMAOTicketDocument($this->db);
-
-                $moduleNameLowerCase = 'gmao';
-                $permissiontoadd     = $user->rights->ticket->write;
-
-                require_once __DIR__ . '/../../saturne/core/tpl/documents/documents_action.tpl.php';
-            }
-
-            if ($action == 'pdfGeneration') {
-                $moduleName          = 'GMAO';
-                $moduleNameLowerCase = strtolower($moduleName);
-                $upload_dir          = $conf->gmao->multidir_output[$conf->entity ?? 1];
-
-                // Action to generate pdf from odt file
-                require_once __DIR__ . '/../../saturne/core/tpl/documents/saturne_manual_pdf_generation_action.tpl.php';
-
-                $urlToRedirect = $_SERVER['REQUEST_URI'];
-                $urlToRedirect = preg_replace('/#pdfGeneration$/', '', $urlToRedirect);
-                $urlToRedirect = preg_replace('/action=pdfGeneration&?/', '', $urlToRedirect); // To avoid infinite loop
-
-                header('Location: ' . $urlToRedirect);
-                exit;
-            }
             if ($action == 'create_gmao') {
                 // Load Dolibarr libraries
                 require_once DOL_DOCUMENT_ROOT . '/comm/propal/class/propal.class.php';
@@ -137,12 +111,12 @@ class ActionsGmao
                 $numberingModuleName = ['propale' => $conf->global->PROPALE_ADDON];
                 list($modPropal)     = saturne_require_objects_mod($numberingModuleName);
 
-                $propal->ref             = $modPropal->getNextValue(0, $propal);
-                $propal->socid           = $object->fk_soc;
-                $propal->date            = dol_now();
-                $propal->duree_validite  = getDolGlobalInt('PROPALE_VALIDITY_DURATION');
-                $propal->fk_project      = $object->fk_project;
-                $propal->model_pdf       = (getDolGlobalString('PROPALE_ADDON_PDF_ODT_DEFAULT') ? getDolGlobalString('PROPALE_ADDON_PDF_ODT_DEFAULT') : getDolGlobalString('PROPALE_ADDON_PDF'));
+                $propal->ref            = $modPropal->getNextValue(0, $propal);
+                $propal->socid          = $object->fk_soc;
+                $propal->date           = dol_now();
+                $propal->duree_validite = getDolGlobalInt('PROPALE_VALIDITY_DURATION');
+                $propal->fk_project     = $object->fk_project;
+                $propal->model_pdf      = (getDolGlobalString('PROPALE_ADDON_PDF_ODT_DEFAULT') ? getDolGlobalString('PROPALE_ADDON_PDF_ODT_DEFAULT') : getDolGlobalString('PROPALE_ADDON_PDF'));
 
                 $propalID = $propal->create($user);
 
@@ -170,6 +144,33 @@ class ActionsGmao
                 header('Location: ' . DOL_URL_ROOT . '/comm/propal/card.php?id=' . $propalID);
                 exit;
             }
+        }
+
+        if ($action == 'builddoc' && strstr(GETPOST('model'), 'gmaoticketdocument_odt')) {
+            require_once __DIR__ . '/gmaodocuments/gmaoticketdocument.class.php';
+
+            $document = new GMAOTicketDocument($this->db);
+
+            $moduleNameLowerCase = 'gmao';
+            $permissiontoadd     = $user->rights->ticket->write;
+
+            require_once __DIR__ . '/../../saturne/core/tpl/documents/documents_action.tpl.php';
+        }
+
+        if ($action == 'pdfGeneration') {
+            $moduleName          = 'GMAO';
+            $moduleNameLowerCase = strtolower($moduleName);
+            $upload_dir          = $conf->gmao->multidir_output[$conf->entity ?? 1];
+
+            // Action to generate pdf from odt file
+            require_once __DIR__ . '/../../saturne/core/tpl/documents/saturne_manual_pdf_generation_action.tpl.php';
+
+            $urlToRedirect = $_SERVER['REQUEST_URI'];
+            $urlToRedirect = preg_replace('/#pdfGeneration$/', '', $urlToRedirect);
+            $urlToRedirect = preg_replace('/action=pdfGeneration&?/', '', $urlToRedirect); // To avoid infinite loop
+
+            header('Location: ' . $urlToRedirect);
+            exit;
         }
 
         return 0; // or return 1 to replace standard code
@@ -201,6 +202,7 @@ class ActionsGmao
                     print '<span class="butActionRefused classfortooltip" title="' . dol_escape_htmltag($langs->trans('ErrorConfigProposalService')) . '">' . img_picto('', 'fa-file-signature') . ' ' . $langs->trans('CreateGMAO') . '</span>';
                 }
              }
+        }
 
         return 0; // or return 1 to replace standard code
     }
@@ -217,6 +219,21 @@ class ActionsGmao
         global $conf, $langs, $object;
 
         if (strpos($parameters['context'], 'ticketcard') !== false) {
+            if (getDolGlobalInt('TICKET_ENABLE_PUBLIC_INTERFACE')) {
+                require_once __DIR__ . '/../../saturne/lib/medias.lib.php';
+
+                $publicInterfaceUrl = dol_buildpath('public/ticket/view.php?track_id=' . $object->track_id . '&entity=' . $conf->entity, 3);
+                $out  = '<tr><td class="titlefield">' . $langs->trans('PublicInterface') . ' <a href="' . $publicInterfaceUrl . '" target="_blank"><i class="fas fa-qrcode"></i></a>';
+                $out .= showValueWithClipboardCPButton($publicInterfaceUrl, 0, '&nbsp;');
+                $out .= '</td>';
+                $out .= '<td>' . saturne_show_medias_linked('ticket', $conf->ticket->multidir_output[$conf->entity] . '/' . $object->ref . '/qrcode/', 'small', 1, 0, 0, 0, 80, 80, 0, 0, 0, $object->ref . '/qrcode/', $object, '', 0, 0) . '</td></tr>'; ?>
+
+                <script>
+                    jQuery('.fichehalfleft table tr:first-child').first().before(<?php echo json_encode($out); ?>)
+                </script>
+                <?php
+            }
+
             if (GETPOST('action') != 'create') {
                 global $user;
 
@@ -236,20 +253,6 @@ class ActionsGmao
 
                 <script>
                     jQuery('.fichehalfleft .div-table-responsive-no-min').append(<?php echo json_encode($out) ; ?>)
-                </script>
-                <?php
-            }
-            if (getDolGlobalInt('TICKET_ENABLE_PUBLIC_INTERFACE')) {
-                require_once __DIR__ . '/../../saturne/lib/medias.lib.php';
-
-                $publicInterfaceUrl = dol_buildpath('public/ticket/view.php?track_id=' . $object->track_id . '&entity=' . $conf->entity, 3);
-                $out  = '<tr><td class="titlefield">' . $langs->trans('PublicInterface') . ' <a href="' . $publicInterfaceUrl . '" target="_blank"><i class="fas fa-qrcode"></i></a>';
-                $out .= showValueWithClipboardCPButton($publicInterfaceUrl, 0, '&nbsp;');
-                $out .= '</td>';
-                $out .= '<td>' . saturne_show_medias_linked('ticket', $conf->ticket->multidir_output[$conf->entity] . '/' . $object->ref . '/qrcode/', 'small', 1, 0, 0, 0, 80, 80, 0, 0, 0, $object->ref . '/qrcode/', $object, '', 0, 0) . '</td></tr>'; ?>
-
-                <script>
-                    jQuery('.fichehalfleft table tr:first-child').first().before(<?php echo json_encode($out); ?>)
                 </script>
                 <?php
             }
