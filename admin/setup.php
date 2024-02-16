@@ -43,9 +43,6 @@ saturne_load_langs();
 $action     = GETPOST('action', 'alpha');
 $backtopage = GETPOST('backtopage', 'alpha');
 
-// Initialize view objects
-$form = new Form($db);
-
 // Security check - Protection if external user
 $permissionToRead = $user->rights->gmao->adminpage->read;
 saturne_check_access($permissionToRead);
