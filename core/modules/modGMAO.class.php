@@ -19,9 +19,9 @@
  * 	\defgroup gmao Module GMAO
  *  \brief    GMAO module descriptor
  *
- *  \file     core/modules/modGMAO.class.php
- *  \ingroup  gmao
- *  \brief    Description and activation file for module GMAO
+ *  \file    core/modules/modGMAO.class.php
+ *  \ingroup gmao
+ *  \brief   Description and activation file for module GMAO
  */
 
 // Load Dolibarr libraries
@@ -169,6 +169,8 @@ class modGMAO extends DolibarrModules
             $i++ => ['GMAO_DB_VERSION', 'chaine', $this->version, '', 0, 'current'],
             $i++ => ['GMAO_SHOW_PATCH_NOTE', 'integer', 1, '', 0, 'current'],
             $i++ => ['GMAO_ADVANCED_TRIGGER', 'integer', 1, '', 0, 'current'],
+            $i++ => ['GMAO_ENABLE_TICKET_PROPOSAL', 'integer', 0, '', 0, 'current'],
+            $i++ => ['GMAO_ENABLE_TICKET_PROPOSAL_GMAO', 'integer', 1, '', 0, 'current'],
 
             // CONST GMAO DOCUMENTS
             $i++ => ['GMAO_AUTOMATIC_PDF_GENERATION', 'integer', 0, '', 0, 'current'],
@@ -230,6 +232,28 @@ class modGMAO extends DolibarrModules
         $this->rights[$r][1] = $langs->transnoentities('ReadAdminPage', 'GMAO');
         $this->rights[$r][4] = 'adminpage';
         $this->rights[$r][5] = 'read';
+
+        // Main menu entries to add
+        $this->menu = [];
+        $r          = 0;
+
+        // Add here entries to declare new menus
+        // TOOLS MENU
+        $this->menu[$r++] = [
+            'fk_menu'  => 'fk_mainmenu=tools',
+            'type'     => 'left',
+            'titre'    => 'GMAO',
+            'prefix'   => '<i class="fas fa-toolbox pictofixedwidth" style="color: #d35968;"></i>',
+            'mainmenu' => 'tools',
+            'leftmenu' => 'gmao',
+            'url'      => '/gmao/admin/setup.php',
+            'langs'    => 'gmao@gmao',
+            'position' => 1000 + $r,
+            'enabled'  => '$conf->gmao->enabled',
+            'perms'    => '$user->rights->gmao->read',
+            'target'   => '',
+            'user'     => 0,
+        ];
     }
 
     /**

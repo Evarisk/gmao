@@ -111,8 +111,23 @@ class InterfaceGMAOTriggers extends DolibarrTriggers
         }
 
         switch ($action) {
+            case 'TICKET_CREATE' :
+                require_once TCPDF_PATH . 'tcpdf_barcodes_2d.php';
 
+                $url = dol_buildpath('public/ticket/view.php?track_id=' . $object->track_id . '&entity=' . $conf->entity, 3);
+
+                $barcode = new TCPDF2DBarcode($url, 'QRCODE,H');
+
+                dol_mkdir($conf->ticket->multidir_output[$conf->entity] . '/' . $object->ref . '/qrcode/');
+                $file = $conf->ticket->multidir_output[$conf->entity] . '/' . $object->ref . '/qrcode/' . 'barcode_' . $object->track_id . '.png';
+
+                $imageData = $barcode->getBarcodePngData();
+                $imageData = imagecreatefromstring($imageData);
+                imagepng($imageData, $file);
+                vignette($file, 70, 70);
+                break;
         }
+
         return 0;
     }
 }
