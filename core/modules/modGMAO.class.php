@@ -19,9 +19,9 @@
  * 	\defgroup gmao Module GMAO
  *  \brief    GMAO module descriptor
  *
- *  \file     core/modules/modGMAO.class.php
- *  \ingroup  gmao
- *  \brief    Description and activation file for module GMAO
+ *  \file    core/modules/modGMAO.class.php
+ *  \ingroup gmao
+ *  \brief   Description and activation file for module GMAO
  */
 
 // Load Dolibarr libraries

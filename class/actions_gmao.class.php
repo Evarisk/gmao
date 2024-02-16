@@ -149,6 +149,36 @@ class ActionsGmao
                 } else {
                     print '<span class="butActionRefused classfortooltip" title="' . dol_escape_htmltag($langs->trans('ErrorConfigProposalService')) . '">' . img_picto('', 'fa-file-signature') . ' ' . $langs->trans('CreateGMAO') . '</span>';
                 }
+             }
+
+        return 0; // or return 1 to replace standard code
+    }
+    
+    /**       
+     * Overloading the printCommonFooter function : replacing the parent's function with the one below
+     *
+     * @param  array     $parameters Hook metadatas (context, etc...)
+     * @return int                   0 < on error, 0 on success, 1 to replace standard code
+     * @throws Exception
+     */
+    public function printCommonFooter(array $parameters): int
+    {
+        global $conf, $langs, $object;
+
+        if (strpos($parameters['context'], 'ticketcard') !== false) {
+            if (getDolGlobalInt('TICKET_ENABLE_PUBLIC_INTERFACE')) {
+                require_once __DIR__ . '/../../saturne/lib/medias.lib.php';
+
+                $publicInterfaceUrl = dol_buildpath('public/ticket/view.php?track_id=' . $object->track_id . '&entity=' . $conf->entity, 3);
+                $out  = '<tr><td class="titlefield">' . $langs->trans('PublicInterface') . ' <a href="' . $publicInterfaceUrl . '" target="_blank"><i class="fas fa-qrcode"></i></a>';
+                $out .= showValueWithClipboardCPButton($publicInterfaceUrl, 0, '&nbsp;');
+                $out .= '</td>';
+                $out .= '<td>' . saturne_show_medias_linked('ticket', $conf->ticket->multidir_output[$conf->entity] . '/' . $object->ref . '/qrcode/', 'small', 1, 0, 0, 0, 80, 80, 0, 0, 0, $object->ref . '/qrcode/', $object, '', 0, 0) . '</td></tr>'; ?>
+
+                <script>
+                    jQuery('.fichehalfleft table tr:first-child').first().before(<?php echo json_encode($out); ?>)
+                </script>
+                <?php
             }
         }
 
