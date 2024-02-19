@@ -1,0 +1,58 @@
+# Copyright (C) 2023 EVARISK <technique@evarisk.com>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+#
+# Générique
+#
+
+# Data - Donnée
+ModuleGMAOName      = GMAO
+ModuleGMAODesc      = Gestion de maintenance au travers des tickets
+GMAODescription     = Gestion de maintenance au travers des tickets
+GMAODescriptionLong = Gestion de maintenance au travers des tickets
+
+
+
+#
+# Config page - Page d'administration
+#
+
+# Setup - Réglages
+ProposalService                     = Service de la proposition commerciale GMAO
+EnableTicketProposal                = Activer la création d'une proposition commerciale depuis un ticket
+EnableTicketProposalDescription     = Cette option permet de créer une proposition commerciale depuis un ticket en récupérant le tiers et le projet associé au ticket
+EnableTicketProposalGMAO            = Activer la création d'une proposition commerciale de maintenance depuis un ticket
+EnableTicketProposalGMAODescription = Cette option permet de créer une proposition commerciale depuis un ticket en récupérant le tiers et le projet associé au ticket.<br>De plus, si l'option du service de la proposition commerciale est configurée, elle va ajouter une ligne de service directement sur la proposition.
+
+
+
+#
+# GMAO
+#
+
+# Data - Donnée
+CreateGMAO                 = Créer une proposition de maintenance
+ErrorConfigProposalService = Impossible de créer une proposition de maintenance sans configurer le service de la proposition commerciale GMAO
+
+
+
+#
+# GMAOTicketDocument - Document de maintenance
+#
+
+# Data - Donnée
+gmaoticketdocument.odt = Document de maintenance
+gmaoticketdocument     = document de maintenance
+GMAOTicketDocument     = Document de maintenance
