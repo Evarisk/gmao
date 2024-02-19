@@ -78,7 +78,7 @@ class modGMAO extends DolibarrModules
         $this->editor_url  = 'https://evarisk.com';
 
         // Possible values for version are: 'development', 'experimental', 'dolibarr', 'dolibarr_deprecated' or a version string like 'x.y.z'
-        $this->version = '0.1.0';
+        $this->version = '1.0.0';
 
         // Url to the file with your last numberversion of this module
         //$this->url_last_version = 'http://www.example.com/versionmodule.txt';
@@ -140,7 +140,7 @@ class modGMAO extends DolibarrModules
         $this->hidden = false;
 
         // List of module class names as string that must be enabled if this module is enabled. Example: array('always1'=>'modModuleToEnable1','always2'=>'modModuleToEnable2', 'FR1'=>'modModuleToEnableFR'...)
-        $this->depends      = ['modAgenda', 'modSaturne'];
+        $this->depends      = ['modSociete', 'modService', 'modProjet', 'modPropale', 'modTicket', 'modSaturne'];
         $this->requiredby   = []; // List of module class names as string to disable if this one is disabled. Example: array('modModuleToDisable1', ...)
         $this->conflictwith = []; // List of module class names as string this module is in conflict with. Example: array('modModuleToDisable1', ...)
 
@@ -183,7 +183,8 @@ class modGMAO extends DolibarrModules
             $i++ => ['GMAO_GMAOTICKETDOCUMENT_DEFAULT_MODEL', 'chaine', 'gmaoticketdocument_odt', '', 0, 'current'],
 
             // CONST DOLIBARR
-            $i => ['MAIN_ODT_AS_PDF', 'chaine', 'libreoffice', '', 0, 'current']
+            $i++ => ['TICKET_ENABLE_PUBLIC_INTERFACE', 'integer', 1, '', 0, 'current'],
+            $i   => ['MAIN_ODT_AS_PDF', 'chaine', 'libreoffice', '', 0, 'current']
         ];
 
         // Some keys to add into the overwriting translation tables
