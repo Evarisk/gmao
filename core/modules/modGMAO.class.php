@@ -277,7 +277,7 @@ class modGMAO extends DolibarrModules
         dolibarr_set_const($this->db, 'GMAO_VERSION', $this->version, 'chaine', 0, '', $conf->entity);
         dolibarr_set_const($this->db, 'GMAO_DB_VERSION', $this->version, 'chaine', 0, '', $conf->entity);
         dolibarr_set_const($this->db, 'TICKET_ENABLE_PUBLIC_INTERFACE', $this->version, 'chaine', 0, '', $conf->entity);
-        dolibarr_set_const($this->db, 'GMAO_GMAOPATH_PUBLIC_INTERFACE', dol_buildpath('/public/ticket/index.php', 1), 'chaine', 0, '', $conf->entity);
+        dolibarr_set_const($this->db, 'GMAO_GMAOPATH_PUBLIC_INTERFACE', dol_buildpath('/public/ticket/index.php', 3), 'chaine', 0, '', $conf->entity);
 
         // Document models
         delDocumentModel('gmaoticketdocument_odt', 'gmaoticketdocument');
