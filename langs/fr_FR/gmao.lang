@@ -53,6 +53,10 @@ ErrorConfigProposalService = Impossible de créer une proposition de maintenance
 #
 
 # Data - Donnée
-gmaoticketdocument.odt = Document de maintenance
-gmaoticketdocument     = document de maintenance
-GMAOTicketDocument     = Document de maintenance
+gmaoticketdocument.odt       = Document de maintenance
+gmaoticketdocument           = document de maintenance
+GMAOTicketDocument           = Document de maintenance
+gmaoclientticketdocument.odt = Ticket client
+gmaoclientticketdocument     = Ticket client
+GMAOClientTicketDocument     = Ticket client
+

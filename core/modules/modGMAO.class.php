@@ -183,7 +183,6 @@ class modGMAO extends DolibarrModules
             $i++ => ['GMAO_GMAOTICKETDOCUMENT_DEFAULT_MODEL', 'chaine', 'gmaoticketdocument_odt', '', 0, 'current'],
 
             // CONST DOLIBARR
-            $i++ => ['TICKET_ENABLE_PUBLIC_INTERFACE', 'integer', 1, '', 0, 'current'],
             $i   => ['MAIN_ODT_AS_PDF', 'chaine', 'libreoffice', '', 0, 'current']
         ];
 
@@ -277,6 +276,8 @@ class modGMAO extends DolibarrModules
 
         dolibarr_set_const($this->db, 'GMAO_VERSION', $this->version, 'chaine', 0, '', $conf->entity);
         dolibarr_set_const($this->db, 'GMAO_DB_VERSION', $this->version, 'chaine', 0, '', $conf->entity);
+        dolibarr_set_const($this->db, 'TICKET_ENABLE_PUBLIC_INTERFACE', $this->version, 'chaine', 0, '', $conf->entity);
+        dolibarr_set_const($this->db, 'GMAO_GMAOPATH_PUBLIC_INTERFACE', dol_buildpath('/public/ticket/index.php', 1), 'chaine', 0, '', $conf->entity);
 
         // Document models
         delDocumentModel('gmaoticketdocument_odt', 'gmaoticketdocument');

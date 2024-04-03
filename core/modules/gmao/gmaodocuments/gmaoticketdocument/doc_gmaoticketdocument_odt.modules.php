@@ -31,17 +31,6 @@ require_once __DIR__ . '/../../../../../../saturne/core/modules/saturne/modules_
 class doc_gmaoticketdocument_odt extends SaturneDocumentModel
 {
     /**
-     * @var array Minimum version of PHP required by module
-     * e.g.: PHP ≥ 5.5 = array(5, 5)
-     */
-    public $phpmin = [7, 4];
-
-    /**
-     * @var string Dolibarr version of the loaded document
-     */
-    public string $version = 'dolibarr';
-
-    /**
      * @var string Module
      */
     public string $module = 'gmao';
@@ -98,6 +87,21 @@ class doc_gmaoticketdocument_odt extends SaturneDocumentModel
         $thirdParty->fetch($object->fk_soc);
         $userAssign->fetch($object->fk_user_assign);
 
+        $pathClient    = $conf->ticket->multidir_output[$conf->entity] . '/' . $object->ref . '/qrcode/client/thumbs/';
+        $imgListClient = dol_dir_list($pathClient, 'files');
+
+        if (!empty($imgListClient)) {
+            foreach ($imgListClient as $img) {
+                $tmpArray['photo_client'] = $img['fullname'];
+            }
+        } else {
+            $noPhoto                  = '/public/theme/common/nophoto.png';
+            $tmpArray['photo_client'] = DOL_DOCUMENT_ROOT . $noPhoto;
+        }
+
+        $tmpArray['ticket_mail']    = $thirdParty->email;
+        $tmpArray['sha_ticket']     = $object->track_id;
+
         $path    = $conf->ticket->multidir_output[$conf->entity] . '/' . $object->ref . '/qrcode/thumbs/';
         $imgList = dol_dir_list($path, 'files');
         if (!empty($imgList)) {
@@ -105,8 +109,8 @@ class doc_gmaoticketdocument_odt extends SaturneDocumentModel
                 $tmpArray['photo'] = $img['fullname'];
             }
         } else {
-            $noPhoto            = '/public/theme/common/nophoto.png';
-            $tmpArray['photo'] = DOL_DOCUMENT_ROOT . $noPhoto;
+            $noPhoto                  = '/public/theme/common/nophoto.png';
+            $tmpArray['photo']        = DOL_DOCUMENT_ROOT . $noPhoto;
         }
 
         $tmpArray['object_ref']     = $object->ref;
