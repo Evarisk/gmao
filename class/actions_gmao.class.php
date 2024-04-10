@@ -21,10 +21,6 @@
  * \brief   GMAO hook overload
  */
 
-// Load Dolibarr libraries
-require_once DOL_DOCUMENT_ROOT . '/core/lib/admin.lib.php';
-require_once DOL_DOCUMENT_ROOT . '/core/lib/images.lib.php';
-
 /**
  * Class ActionsGmao
  */
@@ -153,25 +149,17 @@ class ActionsGmao
                 require_once __DIR__ . '/gmaodocuments/gmaoticketdocument.class.php';
 
                 $moreParams = [
-                        'urls' => [
-                                'public/ticket/view.php?track_id=' . $object->track_id . '&entity=' . $conf->entity,
-                                'ticket/card.php?id=' . $object->id
-                        ],
-                        'file' => [
-                                'gmaoclientticketdocument',
-                                'gmaotechticketdocument',
-                                'gmaospecialticketdocument'
-                        ],
-                        'type' => [
-                                '0',
-                                '1',
-                                '2'
-                        ]
+                    'gmaoclientticketdocument' => [
+                        'url' => 'public/ticket/view.php?track_id=' . $object->track_id . '&entity=' . $conf->entity
+                    ],
+                    'gmaotechticketdocument' => [
+                        'url' => 'ticket/card.php?id=' . $object->id
+                    ]
                 ];
 
                 $document = new GMAOTicketDocument($this->db);
 
-                $document->createQrCode($moreParams, $object);
+                $document->createQRCode($moreParams, $object);
                 $moduleNameLowerCase = 'gmao';
                 $permissiontoadd     = $user->rights->ticket->write;
 

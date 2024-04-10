@@ -117,18 +117,12 @@ class InterfaceGMAOTriggers extends DolibarrTriggers
                 $document = new GMAOTicketDocument($this->db);
 
                 $moreParams = [
-                    'urls' => [
-                        'public/ticket/view.php?track_id=' . $object->track_id . '&entity=' . $conf->entity
+                    'gmaoclientticketdocument' => [
+                        'url' => 'public/ticket/view.php?track_id=' . $object->track_id . '&entity=' . $conf->entity
                     ],
-                    'file' => [
-                        'gmaoclientticketdocument'
-                    ],
-                    'type' => [
-                        '0'
-                    ]
                 ];
 
-                $document->createQrCode($moreParams, $object);
+                $document->createQRCode($moreParams, $object);
                 break;
         }
 
