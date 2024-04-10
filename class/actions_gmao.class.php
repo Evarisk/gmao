@@ -140,37 +140,37 @@ class ActionsGmao
 
                     $propalLine->insert($user);
                 }
-              
+
                 header('Location: ' . DOL_URL_ROOT . '/comm/propal/card.php?id=' . $propalID);
                 exit;
             }
-        }
 
-        if ($action == 'builddoc' && strstr(GETPOST('model'), 'gmaoticketdocument_odt')) {
-            require_once __DIR__ . '/gmaodocuments/gmaoticketdocument.class.php';
+            if ($action == 'builddoc' && preg_match('/\bgmaoticketdocument_odt\b/', GETPOST('model'))) {
+                require_once __DIR__ . '/gmaodocuments/gmaoticketdocument.class.php';
 
-            $document = new GMAOTicketDocument($this->db);
+                $document = new GMAOTicketDocument($this->db);
 
-            $moduleNameLowerCase = 'gmao';
-            $permissiontoadd     = $user->rights->ticket->write;
+                $moduleNameLowerCase = 'gmao';
+                $permissiontoadd     = $user->rights->ticket->write;
 
-            require_once __DIR__ . '/../../saturne/core/tpl/documents/documents_action.tpl.php';
-        }
+                require __DIR__ . '/../../saturne/core/tpl/documents/documents_action.tpl.php';
+            }
 
-        if ($action == 'pdfGeneration') {
-            $moduleName          = 'GMAO';
-            $moduleNameLowerCase = strtolower($moduleName);
-            $upload_dir          = $conf->gmao->multidir_output[$conf->entity ?? 1];
+            if ($action == 'pdfGeneration') {
+                $moduleName          = 'GMAO';
+                $moduleNameLowerCase = strtolower($moduleName);
+                $upload_dir          = $conf->gmao->multidir_output[$conf->entity ?? 1];
 
-            // Action to generate pdf from odt file
-            require_once __DIR__ . '/../../saturne/core/tpl/documents/saturne_manual_pdf_generation_action.tpl.php';
+                // Action to generate pdf from odt file
+                require __DIR__ . '/../../saturne/core/tpl/documents/saturne_manual_pdf_generation_action.tpl.php';
 
-            $urlToRedirect = $_SERVER['REQUEST_URI'];
-            $urlToRedirect = preg_replace('/#pdfGeneration$/', '', $urlToRedirect);
-            $urlToRedirect = preg_replace('/action=pdfGeneration&?/', '', $urlToRedirect); // To avoid infinite loop
+                $urlToRedirect = $_SERVER['REQUEST_URI'];
+                $urlToRedirect = preg_replace('/#pdfGeneration$/', '', $urlToRedirect);
+                $urlToRedirect = preg_replace('/action=pdfGeneration&?/', '', $urlToRedirect); // To avoid infinite loop
 
-            header('Location: ' . $urlToRedirect);
-            exit;
+                header('Location: ' . $urlToRedirect);
+                exit;
+            }
         }
 
         return 0; // or return 1 to replace standard code
@@ -206,8 +206,8 @@ class ActionsGmao
 
         return 0; // or return 1 to replace standard code
     }
-    
-    /**       
+
+    /**
      * Overloading the printCommonFooter function : replacing the parent's function with the one below
      *
      * @param  array     $parameters Hook metadatas (context, etc...)
@@ -252,7 +252,7 @@ class ActionsGmao
                 $out = saturne_show_documents('gmao:GMAOTicketDocument', $dirFiles, $fileDir, $urlSource, $user->rights->ticket->write, $user->rights->ticket->delete, '', 1, 0, 0, 0, '', '', '', '', '', $object); ?>
 
                 <script>
-                    jQuery('.fichehalfleft .div-table-responsive-no-min').append(<?php echo json_encode($out) ; ?>)
+                    jQuery('.fichehalfleft .div-table-responsive-no-min').first().append(<?php echo json_encode($out) ; ?>);
                 </script>
                 <?php
             }
