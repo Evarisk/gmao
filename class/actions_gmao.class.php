@@ -148,8 +148,18 @@ class ActionsGmao
             if ($action == 'builddoc' && preg_match('/\bgmaoticketdocument_odt\b/', GETPOST('model'))) {
                 require_once __DIR__ . '/gmaodocuments/gmaoticketdocument.class.php';
 
+                $moreParams = [
+                    'gmaoclientticketdocument' => [
+                        'url' => 'public/ticket/view.php?track_id=' . $object->track_id . '&entity=' . $conf->entity
+                    ],
+                    'gmaotechticketdocument' => [
+                        'url' => 'ticket/card.php?id=' . $object->id
+                    ]
+                ];
+
                 $document = new GMAOTicketDocument($this->db);
 
+                $document->createQRCode($moreParams, $object);
                 $moduleNameLowerCase = 'gmao';
                 $permissiontoadd     = $user->rights->ticket->write;
 

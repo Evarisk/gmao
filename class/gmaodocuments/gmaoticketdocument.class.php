@@ -48,4 +48,30 @@ class GMAOTicketDocument extends SaturneDocuments
     {
         parent::__construct($db, $this->module, $this->element);
     }
+
+     /**
+     * Create a QR Code if the file doesn't already exist
+     *
+     * @param array  $moreParams Manage all the contents of the QRCode
+     * @param Ticket $ticket     Allow to use track_id of the ticket
+     */
+    public function createQRCode(array $moreParams, Ticket $ticket)
+    {
+        global $conf;
+
+        require_once TCPDF_PATH . 'tcpdf_barcodes_2d.php';
+
+        dol_mkdir($conf->ticket->multidir_output[$conf->entity] . '/' . $ticket->ref . '/qrcode/');
+        foreach ($moreParams as $key => $params) {
+            $techBarcode = new TCPDF2DBarcode(dol_buildpath($params['url'], 3), 'QRCODE,H');
+
+            $file = $conf->ticket->multidir_output[$conf->entity] . '/' . $ticket->ref . '/qrcode/' . 'barcode_' . $key . '_' . $ticket->track_id . '.png';
+            if (!file_exists($file)) {
+                $qrImageData = $techBarcode->getBarcodePngData();
+                $qrImageData = imagecreatefromstring($qrImageData);
+                imagepng($qrImageData, $file);
+                vignette($file, 70, 70);
+            }
+        }
+    }
 }

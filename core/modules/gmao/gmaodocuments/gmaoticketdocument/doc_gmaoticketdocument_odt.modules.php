@@ -31,17 +31,6 @@ require_once __DIR__ . '/../../../../../../saturne/core/modules/saturne/modules_
 class doc_gmaoticketdocument_odt extends SaturneDocumentModel
 {
     /**
-     * @var array Minimum version of PHP required by module
-     * e.g.: PHP ≥ 5.5 = array(5, 5)
-     */
-    public $phpmin = [7, 4];
-
-    /**
-     * @var string Dolibarr version of the loaded document
-     */
-    public string $version = 'dolibarr';
-
-    /**
      * @var string Module
      */
     public string $module = 'gmao';
@@ -102,16 +91,23 @@ class doc_gmaoticketdocument_odt extends SaturneDocumentModel
         $imgList = dol_dir_list($path, 'files');
         if (!empty($imgList)) {
             foreach ($imgList as $img) {
-                $tmpArray['photo'] = $img['fullname'];
+                if (strpos($img['fullname'], 'gmaoclientticketdocument')) {
+                    $tmpArray['photo'] = $img['fullname'];
+                } else {
+                    $tmpArray['photo_tech'] = $img['fullname'];
+                }
             }
         } else {
-            $noPhoto            = '/public/theme/common/nophoto.png';
-            $tmpArray['photo'] = DOL_DOCUMENT_ROOT . $noPhoto;
+            $noPhoto                = '/public/theme/common/nophoto.png';
+            $tmpArray['photo']      = DOL_DOCUMENT_ROOT . $noPhoto;
+            $tmpArray['photo_tech'] = DOL_DOCUMENT_ROOT . $noPhoto;
         }
 
-        $tmpArray['object_ref']     = $object->ref;
-        $tmpArray['object_fk_soc']  = dol_trunc($thirdParty->name, 15, 'right', 'UTF-8', 1);
-        $tmpArray['object_fk_user'] = dol_trunc($userAssign->getFullName($langs), 15, 'right', 'UTF-8', 1);
+        $tmpArray['object_ref']      = $object->ref;
+        $tmpArray['object_fk_soc']   = dol_trunc($thirdParty->name, 15, 'right', 'UTF-8', 1);
+        $tmpArray['object_fk_user']  = dol_trunc($userAssign->getFullName($langs), 15, 'right', 'UTF-8', 1);
+        $tmpArray['thirdparty_mail'] = $thirdParty->email;
+        $tmpArray['object_track_id'] = $object->track_id;
 
         $category   = new Categorie($this->db);
         $categories = $category->containing($object->id, Categorie::TYPE_TICKET);

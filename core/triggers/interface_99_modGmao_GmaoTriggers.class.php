@@ -112,19 +112,17 @@ class InterfaceGMAOTriggers extends DolibarrTriggers
 
         switch ($action) {
             case 'TICKET_CREATE' :
-                require_once TCPDF_PATH . 'tcpdf_barcodes_2d.php';
+                require_once __DIR__ . '/../../class/gmaodocuments/gmaoticketdocument.class.php';
 
-                $url = dol_buildpath('public/ticket/view.php?track_id=' . $object->track_id . '&entity=' . $conf->entity, 3);
+                $document = new GMAOTicketDocument($this->db);
 
-                $barcode = new TCPDF2DBarcode($url, 'QRCODE,H');
+                $moreParams = [
+                    'gmaoclientticketdocument' => [
+                        'url' => 'public/ticket/view.php?track_id=' . $object->track_id . '&entity=' . $conf->entity
+                    ],
+                ];
 
-                dol_mkdir($conf->ticket->multidir_output[$conf->entity] . '/' . $object->ref . '/qrcode/');
-                $file = $conf->ticket->multidir_output[$conf->entity] . '/' . $object->ref . '/qrcode/' . 'barcode_' . $object->track_id . '.png';
-
-                $imageData = $barcode->getBarcodePngData();
-                $imageData = imagecreatefromstring($imageData);
-                imagepng($imageData, $file);
-                vignette($file, 70, 70);
+                $document->createQRCode($moreParams, $object);
                 break;
         }
 
