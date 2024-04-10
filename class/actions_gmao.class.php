@@ -150,22 +150,28 @@ class ActionsGmao
             }
 
             if ($action == 'builddoc' && preg_match('/\bgmaoticketdocument_odt\b/', GETPOST('model'))) {
-                require_once TCPDF_PATH . 'tcpdf_barcodes_2d.php';
-
-                $clientBarcode = new TCPDF2DBarcode(dolibarr_get_const($this->db, 'GMAO_GMAOPATH_PUBLIC_INTERFACE', $conf->entity), 'QRCODE,H');
-
-                dol_mkdir($conf->ticket->multidir_output[$conf->entity] . '/' . $object->ref . '/qrcode/client');
-                $file = $conf->ticket->multidir_output[$conf->entity] . '/' . $object->ref . '/qrcode/client/' . 'barcode_client_' . $object->track_id . '.png';
-
-                $clientImageData = $clientBarcode->getBarcodePngData();
-                $clientImageData = imagecreatefromstring($clientImageData);
-                imagepng($clientImageData, $file);
-                vignette($file, 70, 70);
-
                 require_once __DIR__ . '/gmaodocuments/gmaoticketdocument.class.php';
+
+                $moreParams = [
+                        'urls' => [
+                                'public/ticket/view.php?track_id=' . $object->track_id . '&entity=' . $conf->entity,
+                                'ticket/card.php?id=' . $object->id
+                        ],
+                        'file' => [
+                                'gmaoclientticketdocument',
+                                'gmaotechticketdocument',
+                                'gmaospecialticketdocument'
+                        ],
+                        'type' => [
+                                '0',
+                                '1',
+                                '2'
+                        ]
+                ];
 
                 $document = new GMAOTicketDocument($this->db);
 
+                $document->createQrCode($moreParams, $object);
                 $moduleNameLowerCase = 'gmao';
                 $permissiontoadd     = $user->rights->ticket->write;
 

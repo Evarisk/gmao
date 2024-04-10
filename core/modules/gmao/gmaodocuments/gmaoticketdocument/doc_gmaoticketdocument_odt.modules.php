@@ -87,35 +87,27 @@ class doc_gmaoticketdocument_odt extends SaturneDocumentModel
         $thirdParty->fetch($object->fk_soc);
         $userAssign->fetch($object->fk_user_assign);
 
-        $pathClient    = $conf->ticket->multidir_output[$conf->entity] . '/' . $object->ref . '/qrcode/client/thumbs/';
-        $imgListClient = dol_dir_list($pathClient, 'files');
-
-        if (!empty($imgListClient)) {
-            foreach ($imgListClient as $img) {
-                $tmpArray['photo_client'] = $img['fullname'];
-            }
-        } else {
-            $noPhoto                  = '/public/theme/common/nophoto.png';
-            $tmpArray['photo_client'] = DOL_DOCUMENT_ROOT . $noPhoto;
-        }
-
-        $tmpArray['ticket_mail']    = $thirdParty->email;
-        $tmpArray['sha_ticket']     = $object->track_id;
-
         $path    = $conf->ticket->multidir_output[$conf->entity] . '/' . $object->ref . '/qrcode/thumbs/';
         $imgList = dol_dir_list($path, 'files');
         if (!empty($imgList)) {
             foreach ($imgList as $img) {
-                $tmpArray['photo'] = $img['fullname'];
+                if (strpos($img['fullname'], 'gmaoclientticketdocument')) {
+                    $tmpArray['photo'] = $img['fullname'];
+                } else {
+                    $tmpArray['photo_tech'] = $img['fullname'];
+                }
             }
         } else {
-            $noPhoto                  = '/public/theme/common/nophoto.png';
-            $tmpArray['photo']        = DOL_DOCUMENT_ROOT . $noPhoto;
+            $noPhoto                = '/public/theme/common/nophoto.png';
+            $tmpArray['photo']      = DOL_DOCUMENT_ROOT . $noPhoto;
+            $tmpArray['photo_tech'] = DOL_DOCUMENT_ROOT . $noPhoto;
         }
 
-        $tmpArray['object_ref']     = $object->ref;
-        $tmpArray['object_fk_soc']  = dol_trunc($thirdParty->name, 15, 'right', 'UTF-8', 1);
-        $tmpArray['object_fk_user'] = dol_trunc($userAssign->getFullName($langs), 15, 'right', 'UTF-8', 1);
+        $tmpArray['object_ref']      = $object->ref;
+        $tmpArray['object_fk_soc']   = dol_trunc($thirdParty->name, 15, 'right', 'UTF-8', 1);
+        $tmpArray['object_fk_user']  = dol_trunc($userAssign->getFullName($langs), 15, 'right', 'UTF-8', 1);
+        $tmpArray['thirdparty_mail'] = $thirdParty->email;
+        $tmpArray['object_track_id'] = $object->track_id;
 
         $category   = new Categorie($this->db);
         $categories = $category->containing($object->id, Categorie::TYPE_TICKET);
