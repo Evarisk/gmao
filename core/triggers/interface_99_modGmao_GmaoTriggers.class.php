@@ -114,14 +114,15 @@ class InterfaceGMAOTriggers extends DolibarrTriggers
             case 'TICKET_CREATE' :
                 require_once __DIR__ . '/../../class/gmaodocuments/gmaoticketdocument.class.php';
 
-                $document = new GMAOTicketDocument($this->db);
+                $document   = new GMAOTicketDocument($this->db);
+                $thirdParty = new Societe($this->db);
 
+                $thirdParty->fetch($object->fk_soc);
                 $moreParams = [
                     'gmaoclientticketdocument' => [
-                        'url' => 'public/ticket/view.php?track_id=' . $object->track_id . '&entity=' . $conf->entity
+                        'url' => 'public/ticket/view.php?track_id=' . $object->track_id . '&entity=' . $conf->entity . '&mail=' . $thirdParty->email
                     ],
                 ];
-
                 $document->createQRCode($moreParams, $object);
                 break;
         }

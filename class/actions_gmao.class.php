@@ -21,6 +21,9 @@
  * \brief   GMAO hook overload
  */
 
+// Load Dolibarr libraries
+require_once DOL_DOCUMENT_ROOT . '/core/lib/images.lib.php';
+
 /**
  * Class ActionsGmao
  */
@@ -150,9 +153,13 @@ class ActionsGmao
             }
 
             if ($action == 'builddoc' && preg_match('/\bgmaoticketdocument_odt\b/', GETPOST('model'))) {
+                $thirdParty = new Societe($this->db);
+                
+                $thirdParty->fetch($object->fk_soc);
+
                 $moreParams = [
                     'gmaoclientticketdocument' => [
-                        'url' => 'public/ticket/view.php?track_id=' . $object->track_id . '&entity=' . $conf->entity
+                        'url' => 'public/ticket/view.php?track_id=' . $object->track_id . '&entity=' . $conf->entity . '&mail=' . $thirdParty->email
                     ],
                     'gmaotechticketdocument' => [
                         'url' => 'ticket/card.php?id=' . $object->id
