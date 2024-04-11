@@ -21,9 +21,6 @@
  * \brief   GMAO hook overload
  */
 
-// Load Dolibarr libraries
-require_once DOL_DOCUMENT_ROOT . '/core/lib/images.lib.php';
-
 /**
  * Class ActionsGmao
  */
@@ -159,7 +156,7 @@ class ActionsGmao
 
                 $moreParams = [
                     'gmaoclientticketdocument' => [
-                        'url' => 'public/ticket/view.php?track_id=' . $object->track_id . '&entity=' . $conf->entity . '&mail=' . $thirdParty->email
+                        'url' => 'public/ticket/view.php?track_id=' . $object->track_id . '&entity=' . $conf->entity . '&email=' . $thirdParty->email
                     ],
                     'gmaotechticketdocument' => [
                         'url' => 'ticket/card.php?id=' . $object->id
@@ -205,7 +202,6 @@ class ActionsGmao
             }
 
             require __DIR__ . '/../../saturne/core/tpl/documents/documents_action.tpl.php';
-
         }
         return 0; // or return 1 to replace standard code
     }
