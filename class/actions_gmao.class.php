@@ -169,8 +169,11 @@ class ActionsGmao
                 $document->createQRCode($moreParams, $object);
                 $moduleNameLowerCase = 'gmao';
                 $permissiontoadd     = $user->rights->ticket->write;
+            }
 
-                require __DIR__ . '/../../saturne/core/tpl/documents/documents_action.tpl.php';
+            if ($action == 'remove_file' && preg_match('/\bgmaoticketdocument\b/', GETPOST('file'))) {
+                $upload_dir         = $conf->gmao->multidir_output[$conf->entity ?? 1];
+                $permissiontodelete = $user->rights->ticket->delete;
             }
 
             if ($action == 'pdfGeneration') {
@@ -200,6 +203,9 @@ class ActionsGmao
                 header('Location: ' . $_SERVER['PHP_SELF'] . '?id=' . $object->id);
                 exit;
             }
+
+            require __DIR__ . '/../../saturne/core/tpl/documents/documents_action.tpl.php';
+
         }
         return 0; // or return 1 to replace standard code
     }
