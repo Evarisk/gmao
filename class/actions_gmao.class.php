@@ -156,7 +156,7 @@ class ActionsGmao
 
                 $moreParams = [
                     'gmaoclientticketdocument' => [
-                        'url' => 'public/ticket/view.php?track_id=' . $object->track_id . '&entity=' . $conf->entity . '&email=' . $thirdParty->email
+                        'url' => 'public/ticket/view.php?track_id=' . $object->track_id . '&email=' . $thirdParty->email . '&entity=' . $conf->entity
                     ],
                     'gmaotechticketdocument' => [
                         'url' => 'ticket/card.php?id=' . $object->id
