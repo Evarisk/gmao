@@ -207,6 +207,88 @@ class ActionsGmao
 
             require __DIR__ . '/../../saturne/core/tpl/documents/documents_action.tpl.php';
         }
+
+        if (strpos($parameters['context'], 'inventorycard') !== false) {
+            if (GETPOST('dataMigrationImportGlobal', 'alpha') && ! empty($conf->global->MAIN_UPLOAD_DOC)) {
+                // Submit file
+                if (!empty($_FILES)) {
+                    if (!preg_match('/.csv/', $_FILES['dataMigrationImportGlobalfile']['name'][0]) || $_FILES['dataMigrationImportGlobalfile']['size'][0] < 1) {
+                        setEventMessages($langs->trans('ErrorFileNotWellFormattedZIP'), null, 'errors');
+                    } else {
+                        if (is_array($_FILES['dataMigrationImportGlobalfile']['tmp_name'])) $userfiles = $_FILES['dataMigrationImportGlobalfile']['tmp_name'];
+                        else $userfiles                                                          = array($_FILES['dataMigrationImportGlobalfile']['tmp_name']);
+
+                        foreach ($userfiles as $key => $userfile) {
+                            if (empty($_FILES['dataMigrationImportGlobalfile']['tmp_name'][$key])) {
+                                $error++;
+                                if ($_FILES['dataMigrationImportGlobalfile']['error'][$key] == 1 || $_FILES['dataMigrationImportGlobalfile']['error'][$key] == 2) {
+                                    setEventMessages($langs->trans('ErrorFileSizeTooLarge'), null, 'errors');
+                                } else {
+                                    setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("File")), null, 'errors');
+                                }
+                            }
+                        }
+
+                        if (!$error) {
+                            $filedir = $conf->gmao->multidir_output[$conf->entity ?? 1] . '/temp/';
+                            if (!empty($filedir)) {
+                                require_once DOL_DOCUMENT_ROOT . '/core/lib/files.lib.php';
+                                $result = dol_add_file_process($filedir, 0, 1, 'dataMigrationImportGlobalfile', '', null, '', 0, null);
+
+                            }
+                        }
+
+                        // Chemin vers le fichier CSV
+                        $chemin_fichier_csv = $filedir . '/' .$_FILES['dataMigrationImportGlobalfile']['name'][0];
+
+                        // Ouvrir le fichier en mode lecture
+                        $fichier = fopen($chemin_fichier_csv, 'r');
+
+                        // Vérifier si le fichier est ouvert avec succès
+                        if ($fichier !== false) {
+                            // Initialiser un tableau pour stocker les données CSV
+                            $tableau_csv = array();
+
+                            // Lire chaque ligne du fichier CSV jusqu'à la fin du fichier
+                            while (($ligne = fgetcsv($fichier)) !== false) {
+                                // Ajouter la ligne au tableau CSV
+                                $tableau_csv[] = $ligne;
+                            }
+
+                            // Fermer le fichier
+                            fclose($fichier);
+
+                            // Afficher le tableau CSV
+                            unset($tableau_csv[0]);
+                            global $batch;
+                            foreach ($tableau_csv as $test) {
+                                $inventoryLine = new InventoryLine($this->db);
+//
+                                $inventoryLine->fk_inventory = $object->id;
+                                $inventoryLine->datec        = dol_now();
+                                $inventoryLine->fk_warehouse = $test[0];
+                                $inventoryLine->fk_product   = $test[1];
+                                $inventoryLine->batch        = $test[2];
+                                $inventoryLine->qty_view     = $test[3];
+//                                $_POST['addline']      = '';
+//                                $_POST['fk_warehouse'] = $test[0];
+//                                $_POST['fk_product']   = $test[1];
+//                                $batch                 = $test[2];
+//                                $_POST['qtytoadd']     = $test[3];
+//                                $_POST['addline']      = 1;
+//
+                                $inventoryLine->create($user);
+                            }
+                            unlink($chemin_fichier_csv);
+                        } else {
+                            // Afficher un message d'erreur si le fichier n'a pas pu être ouvert
+                            echo "Impossible d'ouvrir le fichier CSV.";
+                        }
+                    }
+                }
+            }
+        }
+
         return 0; // or return 1 to replace standard code
     }
 
@@ -296,6 +378,17 @@ class ActionsGmao
                 </script>
                 <?php
             }
+        }
+
+        if (strpos($parameters['context'], 'inventorycard') !== false) {
+            $out  = '<input type="file" name="dataMigrationImportGlobalfile[]" id="data-migration-import-global" />';
+            $out .= '<input type="submit" class="button reposition data-migration-submit" name="dataMigrationImportGlobal" value="' . $langs->trans("ImportMassBatch") . '">'; ?>
+
+            <script>
+                jQuery('#formrecord').attr('enctype', 'multipart/form-data');
+                jQuery('center').first().append(<?php echo json_encode($out); ?>);
+            </script>
+            <?php
         }
 
         return 0; // or return 1 to replace standard code
