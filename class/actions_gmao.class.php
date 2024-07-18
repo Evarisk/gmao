@@ -21,6 +21,9 @@
  * \brief   GMAO hook overload
  */
 
+// Load GMAO libraries
+require_once __DIR__ . '/gmaodocuments/gmaoticketdocument.class.php';
+
 /**
  * Class ActionsGmao
  */
@@ -99,6 +102,8 @@ class ActionsGmao
         global $conf, $langs, $user;
 
         if (strpos($parameters['context'], 'ticketcard') !== false) {
+            $document = new GMAOTicketDocument($this->db);
+
             if ($action == 'create_gmao') {
                 // Load Dolibarr libraries
                 require_once DOL_DOCUMENT_ROOT . '/comm/propal/class/propal.class.php';
@@ -146,8 +151,6 @@ class ActionsGmao
             }
 
             if ($action == 'builddoc' && preg_match('/\bgmaoticketdocument_odt\b/', GETPOST('model'))) {
-                require_once __DIR__ . '/gmaodocuments/gmaoticketdocument.class.php';
-
                 $moreParams = [
                     'gmaoclientticketdocument' => [
                         'url' => 'public/ticket/view.php?track_id=' . $object->track_id . '&entity=' . $conf->entity
@@ -156,8 +159,6 @@ class ActionsGmao
                         'url' => 'ticket/card.php?id=' . $object->id
                     ]
                 ];
-
-                $document = new GMAOTicketDocument($this->db);
 
                 $document->createQRCode($moreParams, $object);
                 $moduleNameLowerCase = 'gmao';
@@ -181,6 +182,25 @@ class ActionsGmao
                 header('Location: ' . $urlToRedirect);
                 exit;
             }
+
+            if ($action == 'generate_qrcode') {
+                $moreParams = [
+                    'generateQrCode' => [
+                        'url' => 'public/ticket/view.php?track_id=' . $object->track_id . '&entity=' . $conf->entity
+                    ],
+                ];
+
+                $document->createQRCode($moreParams, $object);
+
+                $urlToRedirect = $_SERVER['REQUEST_URI'];
+
+                if (isset($urlToRedirect) && !empty($urlToRedirect)) {
+                    $urlToRedirect = explode('&action=', $urlToRedirect)[0];
+                    header('Location: ' . $urlToRedirect);
+                    exit;
+                }
+            }
+
         }
 
         return 0; // or return 1 to replace standard code
@@ -236,11 +256,16 @@ class ActionsGmao
                 $out  = '<tr><td class="titlefield">' . $langs->trans('PublicInterface') . ' <a href="' . $publicInterfaceUrl . '" target="_blank"><i class="fas fa-qrcode"></i></a>';
                 $out .= showValueWithClipboardCPButton($publicInterfaceUrl, 0, '&nbsp;');
                 $out .= '</td>';
-                $out .= '<td>' . saturne_show_medias_linked('ticket', $conf->ticket->multidir_output[$conf->entity] . '/' . $object->ref . '/qrcode/', 'small', 1, 0, 0, 0, 80, 80, 0, 0, 0, $object->ref . '/qrcode/', $object, '', 0, 0) . '</td></tr>'; ?>
+                $out .= '<td>' . saturne_show_medias_linked('ticket', $conf->ticket->multidir_output[$conf->entity] . '/' . $object->ref . '/qrcode/', 'small', 1, 0, 0, 0, 80, 80, 0, 0, 0, $object->ref . '/qrcode/', $object, '', 0, 0) . '</td>';
+                $out .= '<td>';
+                $out .= '<a class="reposition" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=generate_qrcode&token=' . newToken() . '">';
+                $out .= img_picto($langs->trans('Generate'), 'fontawesome_fa-redo_fas_#444', 'class="paddingleft"') . '</a>';
+                $out .= '</tr>';
 
-                <script>
-                    jQuery('.fichehalfleft table tr:first-child').first().before(<?php echo json_encode($out); ?>)
-                </script>
+                ?>
+                    <script>
+                        jQuery('.fichehalfleft table tr:first-child').first().before(<?php echo json_encode($out); ?>)
+                    </script>
                 <?php
             }
 
