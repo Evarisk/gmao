@@ -68,4 +68,5 @@ gmaospecialticketdocument     = ticket client et ticket interne
 #
 
 # Data - Donnée
-ImportMassBatch = Import en masse de lot/série
+ImportMassBatch     = Import en masse de lot/série
+ErrorInvalidHeaders = Erreur : mauvaise en-tête de fichier %s

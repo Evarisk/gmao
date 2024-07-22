@@ -243,28 +243,35 @@ class ActionsGmao
                             $filePath = $fileDir . '/' . $_FILES['importMassBatch']['name'][0];
                             $fileCSV  = fopen($filePath, 'r');
                             if ($fileCSV !== false) {
-                                $CSVData = [];
-                                while (($row = fgetcsv($fileCSV)) !== false) {
-                                    $CSVData[] = $row;
+                                $headers         = fgetcsv($fileCSV);
+                                $expectedHeaders = ['FK_STOCK', 'FK_PRODUCT', 'BATCH', 'QTY'];
+                                if ($headers === $expectedHeaders) {
+                                    $CSVData = [];
+                                    while (($row = fgetcsv($fileCSV)) !== false) {
+                                        $CSVData[] = $row;
+                                    }
+                                    fclose($fileCSV);
+                                    unset($CSVData[0]);
+
+                                    foreach ($CSVData as $cell) {
+                                        $inventoryLine = new InventoryLine($this->db);
+                                        $inventoryLine->fk_inventory = $object->id;
+                                        $inventoryLine->datec        = dol_now();
+                                        $inventoryLine->fk_warehouse = $cell[0];
+                                        $inventoryLine->fk_product   = $cell[1];
+                                        $inventoryLine->batch        = $cell[2];
+                                        $inventoryLine->qty_view     = $cell[3];
+
+                                        $inventoryLine->create($user);
+                                    }
+
+                                    unlink($filePath);
+                                    header('Location: ' . $_SERVER['PHP_SELF'] . '?id=' . $object->id);
+                                    exit;
+                                } else {
+                                    fclose($fileCSV);
+                                    setEventMessages($langs->trans('ErrorInvalidHeaders', 'FK_STOCK, FK_PRODUCT, BATCH, QTY'), [], 'errors');
                                 }
-                                fclose($fileCSV);
-                                unset($CSVData[0]);
-
-                                foreach ($CSVData as $cell) {
-                                    $inventoryLine = new InventoryLine($this->db);
-                                    $inventoryLine->fk_inventory = $object->id;
-                                    $inventoryLine->datec        = dol_now();
-                                    $inventoryLine->fk_warehouse = $cell[0];
-                                    $inventoryLine->fk_product   = $cell[1];
-                                    $inventoryLine->batch        = $cell[2];
-                                    $inventoryLine->qty_view     = $cell[3];
-
-                                    $inventoryLine->create($user);
-                                }
-
-                                unlink($filePath);
-                                header('Location: ' . $_SERVER['PHP_SELF'] . '?id=' . $object->id);
-                                exit;
                             } else {
                                 setEventMessages($langs->trans('ErrorFileNotFound'), [], 'errors');
                             }
