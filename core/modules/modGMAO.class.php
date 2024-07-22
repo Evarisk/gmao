@@ -268,7 +268,7 @@ class modGMAO extends DolibarrModules
      */
     public function init($options = ''): int
     {
-        global $conf;
+        global $conf, $db, $langs;
 
         // Permissions
         $this->remove($options);
@@ -283,6 +283,17 @@ class modGMAO extends DolibarrModules
         delDocumentModel('gmaoticketdocument_odt', 'gmaoticketdocument');
 
         addDocumentModel('gmaoticketdocument_odt', 'gmaoticketdocument', 'ODT templates', 'GMAO_GMAOTICKETDOCUMENT_ADDON_ODT_PATH');
+
+        if (getDolGlobalInt('GMAO_TICKET_MAIN_CATEGORIES_SET') == 0) {
+            $tagParentID = saturne_create_category($langs->transnoentities('GMAO'), 'ticket', 0, 'pictogram_GMAO_64px.png');
+
+            saturne_create_category($langs->transnoentities('Preventive'), 'ticket', $tagParentID, 'pictogram_Preventive_64px.png');
+            saturne_create_category($langs->transnoentities('Curative'), 'ticket', $tagParentID, 'pictogram_Curative_64px.png');
+            saturne_create_category($langs->transnoentities('Improvement'), 'ticket', $tagParentID, 'pictogram_Improvement_64px.png');
+
+            dolibarr_set_const($db, 'GMAO_TICKET_MAIN_CATEGORY', $tagParentID, 'integer', 0, '', $conf->entity);
+            dolibarr_set_const($db, 'GMAO_TICKET_MAIN_CATEGORIES_SET', 1, 'integer', 0, '', $conf->entity);
+        }
 
         return $this->_init($sql, $options);
     }

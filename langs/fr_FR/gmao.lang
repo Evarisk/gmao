@@ -23,6 +23,11 @@ ModuleGMAODesc      = Gestion de maintenance au travers des tickets
 GMAODescription     = Gestion de maintenance au travers des tickets
 GMAODescriptionLong = Gestion de maintenance au travers des tickets
 
+# Tags - Catégories
+Preventive  = Préventive
+Curative    = Curative
+Improvement = Amélioration
+
 
 
 #
