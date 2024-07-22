@@ -60,3 +60,12 @@ gmaotechticketdocument.odt    = Ticket interne
 gmaotechticketdocument        = ticket interne
 gmaospecialticketdocument.odt = Ticket client et ticket interne
 gmaospecialticketdocument     = ticket client et ticket interne
+
+
+
+#
+# Other - Autres
+#
+
+# Data - Donnée
+ImportMassBatch = Import en masse de lot/série

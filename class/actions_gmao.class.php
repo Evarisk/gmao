@@ -209,80 +209,65 @@ class ActionsGmao
         }
 
         if (strpos($parameters['context'], 'inventorycard') !== false) {
-            if (GETPOST('dataMigrationImportGlobal', 'alpha') && ! empty($conf->global->MAIN_UPLOAD_DOC)) {
+            if (GETPOST('importMassBatch', 'alpha') && ! empty($conf->global->MAIN_UPLOAD_DOC)) {
                 // Submit file
                 if (!empty($_FILES)) {
-                    if (!preg_match('/.csv/', $_FILES['dataMigrationImportGlobalfile']['name'][0]) || $_FILES['dataMigrationImportGlobalfile']['size'][0] < 1) {
-                        setEventMessages($langs->trans('ErrorFileNotWellFormattedZIP'), null, 'errors');
+                    $error = 0;
+                    if (pathinfo($_FILES['importMassBatch']['name'][0], PATHINFO_EXTENSION) != 'csv') {
+                        setEventMessages($langs->trans('ErrorWrongFileNameExtension', $_FILES['importMassBatch']['name'][0]), [], 'errors');
                     } else {
-                        if (is_array($_FILES['dataMigrationImportGlobalfile']['tmp_name'])) $userfiles = $_FILES['dataMigrationImportGlobalfile']['tmp_name'];
-                        else $userfiles                                                          = array($_FILES['dataMigrationImportGlobalfile']['tmp_name']);
+                        if (is_array($_FILES['importMassBatch']['tmp_name'])) {
+                            $files = $_FILES['importMassBatch']['tmp_name'];
+                        } else {
+                            $files = [$_FILES['importMassBatch']['tmp_name']];
+                        }
 
-                        foreach ($userfiles as $key => $userfile) {
-                            if (empty($_FILES['dataMigrationImportGlobalfile']['tmp_name'][$key])) {
+                        foreach ($files as $key => $file) {
+                            if (empty($_FILES['importMassBatch']['tmp_name'][$key])) {
                                 $error++;
-                                if ($_FILES['dataMigrationImportGlobalfile']['error'][$key] == 1 || $_FILES['dataMigrationImportGlobalfile']['error'][$key] == 2) {
-                                    setEventMessages($langs->trans('ErrorFileSizeTooLarge'), null, 'errors');
+                                if ($_FILES['importMassBatch']['error'][$key] == 1 || $_FILES['importMassBatch']['error'][$key] == 2) {
+                                    setEventMessages($langs->trans('ErrorFileSizeTooLarge'), [], 'errors');
                                 } else {
-                                    setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("File")), null, 'errors');
+                                    setEventMessages($langs->trans('ErrorFieldRequired', $langs->transnoentitiesnoconv('File')), [], 'errors');
                                 }
                             }
                         }
 
                         if (!$error) {
-                            $filedir = $conf->gmao->multidir_output[$conf->entity ?? 1] . '/temp/';
-                            if (!empty($filedir)) {
+                            $fileDir = $conf->gmao->multidir_output[$conf->entity ?? 1] . '/temp/';
+                            if (!empty($fileDir)) {
                                 require_once DOL_DOCUMENT_ROOT . '/core/lib/files.lib.php';
-                                $result = dol_add_file_process($filedir, 0, 1, 'dataMigrationImportGlobalfile', '', null, '', 0, null);
-
-                            }
-                        }
-
-                        // Chemin vers le fichier CSV
-                        $chemin_fichier_csv = $filedir . '/' .$_FILES['dataMigrationImportGlobalfile']['name'][0];
-
-                        // Ouvrir le fichier en mode lecture
-                        $fichier = fopen($chemin_fichier_csv, 'r');
-
-                        // Vérifier si le fichier est ouvert avec succès
-                        if ($fichier !== false) {
-                            // Initialiser un tableau pour stocker les données CSV
-                            $tableau_csv = array();
-
-                            // Lire chaque ligne du fichier CSV jusqu'à la fin du fichier
-                            while (($ligne = fgetcsv($fichier)) !== false) {
-                                // Ajouter la ligne au tableau CSV
-                                $tableau_csv[] = $ligne;
+                                dol_add_file_process($fileDir, 0, 1, 'importMassBatch', '', null, '', 0);
                             }
 
-                            // Fermer le fichier
-                            fclose($fichier);
+                            $filePath = $fileDir . '/' . $_FILES['importMassBatch']['name'][0];
+                            $fileCSV  = fopen($filePath, 'r');
+                            if ($fileCSV !== false) {
+                                $CSVData = [];
+                                while (($row = fgetcsv($fileCSV)) !== false) {
+                                    $CSVData[] = $row;
+                                }
+                                fclose($fileCSV);
+                                unset($CSVData[0]);
 
-                            // Afficher le tableau CSV
-                            unset($tableau_csv[0]);
-                            global $batch;
-                            foreach ($tableau_csv as $test) {
-                                $inventoryLine = new InventoryLine($this->db);
-//
-                                $inventoryLine->fk_inventory = $object->id;
-                                $inventoryLine->datec        = dol_now();
-                                $inventoryLine->fk_warehouse = $test[0];
-                                $inventoryLine->fk_product   = $test[1];
-                                $inventoryLine->batch        = $test[2];
-                                $inventoryLine->qty_view     = $test[3];
-//                                $_POST['addline']      = '';
-//                                $_POST['fk_warehouse'] = $test[0];
-//                                $_POST['fk_product']   = $test[1];
-//                                $batch                 = $test[2];
-//                                $_POST['qtytoadd']     = $test[3];
-//                                $_POST['addline']      = 1;
-//
-                                $inventoryLine->create($user);
+                                foreach ($CSVData as $cell) {
+                                    $inventoryLine = new InventoryLine($this->db);
+                                    $inventoryLine->fk_inventory = $object->id;
+                                    $inventoryLine->datec        = dol_now();
+                                    $inventoryLine->fk_warehouse = $cell[0];
+                                    $inventoryLine->fk_product   = $cell[1];
+                                    $inventoryLine->batch        = $cell[2];
+                                    $inventoryLine->qty_view     = $cell[3];
+
+                                    $inventoryLine->create($user);
+                                }
+
+                                unlink($filePath);
+                                header('Location: ' . $_SERVER['PHP_SELF'] . '?id=' . $object->id);
+                                exit;
+                            } else {
+                                setEventMessages($langs->trans('ErrorFileNotFound'), [], 'errors');
                             }
-                            unlink($chemin_fichier_csv);
-                        } else {
-                            // Afficher un message d'erreur si le fichier n'a pas pu être ouvert
-                            echo "Impossible d'ouvrir le fichier CSV.";
                         }
                     }
                 }
@@ -381,8 +366,8 @@ class ActionsGmao
         }
 
         if (strpos($parameters['context'], 'inventorycard') !== false) {
-            $out  = '<input type="file" name="dataMigrationImportGlobalfile[]" id="data-migration-import-global" />';
-            $out .= '<input type="submit" class="button reposition data-migration-submit" name="dataMigrationImportGlobal" value="' . $langs->trans("ImportMassBatch") . '">'; ?>
+            $out  = '<input type="file" name="importMassBatch[]" id="import-mass-batch" />';
+            $out .= '<input type="submit" class="button reposition" name="importMassBatch" value="' . $langs->trans('ImportMassBatch') . '">'; ?>
 
             <script>
                 jQuery('#formrecord').attr('enctype', 'multipart/form-data');
