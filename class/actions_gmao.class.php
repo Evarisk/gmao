@@ -151,12 +151,12 @@ class ActionsGmao
 
             if ($action == 'builddoc' && preg_match('/\bgmaoticketdocument_odt\b/', GETPOST('model'))) {
                 $thirdParty = new Societe($this->db);
-                
+
                 $thirdParty->fetch($object->fk_soc);
 
                 $moreParams = [
                     'gmaoclientticketdocument' => [
-                        'url' => 'public/ticket/view.php?track_id=' . $object->track_id . '&email=' . $thirdParty->email . '&entity=' . $conf->entity
+                        'url' => 'public/ticket/view.php?track_id=' . $object->track_id . (dol_strlen($thirdParty->email) > 0 ? '&email=' . $thirdParty->email : '') . '&entity=' . $conf->entity
                     ],
                     'gmaotechticketdocument' => [
                         'url' => 'ticket/card.php?id=' . $object->id
@@ -190,9 +190,13 @@ class ActionsGmao
             }
 
             if ($action == 'generate_qrcode') {
+                $thirdParty = new Societe($this->db);
+
+                $thirdParty->fetch($object->fk_soc);
+
                 $moreParams = [
                     'gmaoclientticketdocument' => [
-                        'url' => 'public/ticket/view.php?track_id=' . $object->track_id . '&entity=' . $conf->entity
+                        'url' => 'public/ticket/view.php?track_id=' . $object->track_id . (dol_strlen($thirdParty->email) > 0 ? '&email=' . $thirdParty->email : '') . '&entity=' . $conf->entity
                     ],
                 ];
 

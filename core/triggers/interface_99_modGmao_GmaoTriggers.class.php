@@ -118,9 +118,10 @@ class InterfaceGMAOTriggers extends DolibarrTriggers
                 $thirdParty = new Societe($this->db);
 
                 $thirdParty->fetch($object->fk_soc);
+
                 $moreParams = [
                     'gmaoclientticketdocument' => [
-                        'url' => 'public/ticket/view.php?track_id=' . $object->track_id . dol_stren($thirdParty->email) > 0 . '&email=' . $thirdParty->email . '&entity=' . $conf->entity
+                        'url' => 'public/ticket/view.php?track_id=' . $object->track_id . (dol_strlen($thirdParty->email) > 0 ? '&email=' . $thirdParty->email : '') . '&entity=' . $conf->entity
                     ],
                 ];
                 $document->createQRCode($moreParams, $object);
