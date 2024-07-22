@@ -150,9 +150,13 @@ class ActionsGmao
             }
 
             if ($action == 'builddoc' && preg_match('/\bgmaoticketdocument_odt\b/', GETPOST('model'))) {
+                $thirdParty = new Societe($this->db);
+
+                $thirdParty->fetch($object->fk_soc);
+
                 $moreParams = [
                     'gmaoclientticketdocument' => [
-                        'url' => 'public/ticket/view.php?track_id=' . $object->track_id . '&entity=' . $conf->entity
+                        'url' => 'public/ticket/view.php?track_id=' . $object->track_id . (dol_strlen($thirdParty->email) > 0 ? '&email=' . $thirdParty->email : '') . '&entity=' . $conf->entity
                     ],
                     'gmaotechticketdocument' => [
                         'url' => 'ticket/card.php?id=' . $object->id
@@ -162,8 +166,11 @@ class ActionsGmao
                 $document->createQRCode($moreParams, $object);
                 $moduleNameLowerCase = 'gmao';
                 $permissiontoadd     = $user->rights->ticket->write;
+            }
 
-                require __DIR__ . '/../../saturne/core/tpl/documents/documents_action.tpl.php';
+            if ($action == 'remove_file' && preg_match('/\bgmaoticketdocument\b/', GETPOST('file'))) {
+                $upload_dir         = $conf->gmao->multidir_output[$conf->entity ?? 1];
+                $permissiontodelete = $user->rights->ticket->delete;
             }
 
             if ($action == 'pdfGeneration') {
@@ -183,9 +190,13 @@ class ActionsGmao
             }
 
             if ($action == 'generate_qrcode') {
+                $thirdParty = new Societe($this->db);
+
+                $thirdParty->fetch($object->fk_soc);
+
                 $moreParams = [
                     'gmaoclientticketdocument' => [
-                        'url' => 'public/ticket/view.php?track_id=' . $object->track_id . '&entity=' . $conf->entity
+                        'url' => 'public/ticket/view.php?track_id=' . $object->track_id . (dol_strlen($thirdParty->email) > 0 ? '&email=' . $thirdParty->email : '') . '&entity=' . $conf->entity
                     ],
                 ];
 
@@ -193,6 +204,8 @@ class ActionsGmao
                 header('Location: ' . $_SERVER['PHP_SELF'] . '?id=' . $object->id);
                 exit;
             }
+
+            require __DIR__ . '/../../saturne/core/tpl/documents/documents_action.tpl.php';
         }
         return 0; // or return 1 to replace standard code
     }
