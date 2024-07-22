@@ -180,7 +180,7 @@ class modGMAO extends DolibarrModules
             $i++ => ['GMAO_GMAOTICKETDOCUMENT_ADDON', 'chaine', 'mod_gmaoticketdocument_standard', '', 0, 'current'],
             $i++ => ['GMAO_GMAOTICKETDOCUMENT_ADDON_ODT_PATH', 'chaine', 'DOL_DOCUMENT_ROOT/custom/gmao/documents/doctemplates/gmaoticketdocument/', '', 0, 'current'],
             $i++ => ['GMAO_GMAOTICKETDOCUMENT_CUSTOM_ADDON_ODT_PATH', 'chaine', 'DOL_DATA_ROOT' . (($conf->entity == 1 ) ? '/' : '/' . $conf->entity . '/') . 'ecm/gmao/gmaoticketdocument/', '', 0, 'current'],
-            $i++ => ['GMAO_GMAOTICKETDOCUMENT_DEFAULT_MODEL', 'chaine', 'gmaoclientticketdocument_odt', '', 0, 'current'],
+            $i++ => ['GMAO_GMAOTICKETDOCUMENT_DEFAULT_MODEL', 'chaine', 'gmaoticketdocument_odt', '', 0, 'current'],
 
             // CONST DOLIBARR
             $i   => ['MAIN_ODT_AS_PDF', 'chaine', 'libreoffice', '', 0, 'current']
@@ -279,9 +279,9 @@ class modGMAO extends DolibarrModules
         dolibarr_set_const($this->db, 'TICKET_ENABLE_PUBLIC_INTERFACE', $this->version, 'chaine', 0, '', $conf->entity);
 
         // Document models
-        delDocumentModel('gmaoclientticketdocument_odt', 'gmaoticketdocument');
+        delDocumentModel('gmaoticketdocument_odt', 'gmaoticketdocument');
 
-        addDocumentModel('gmaoclientticketdocument_odt', 'gmaoticketdocument', 'ODT templates', 'GMAO_GMAOTICKETDOCUMENT_ADDON_ODT_PATH');
+        addDocumentModel('gmaoticketdocument_odt', 'gmaoticketdocument', 'ODT templates', 'GMAO_GMAOTICKETDOCUMENT_ADDON_ODT_PATH');
 
         return $this->_init($sql, $options);
     }
