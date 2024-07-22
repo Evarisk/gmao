@@ -150,9 +150,13 @@ class ActionsGmao
             }
 
             if ($action == 'builddoc' && preg_match('/\bgmaoticketdocument_odt\b/', GETPOST('model'))) {
+                $thirdParty = new Societe($this->db);
+
+                $thirdParty->fetch($object->fk_soc);
+
                 $moreParams = [
                     'gmaoclientticketdocument' => [
-                        'url' => 'public/ticket/view.php?track_id=' . $object->track_id . '&entity=' . $conf->entity
+                        'url' => 'public/ticket/view.php?track_id=' . $object->track_id . (dol_strlen($thirdParty->email) > 0 ? '&email=' . $thirdParty->email : '') . '&entity=' . $conf->entity
                     ],
                     'gmaotechticketdocument' => [
                         'url' => 'ticket/card.php?id=' . $object->id
@@ -162,8 +166,11 @@ class ActionsGmao
                 $document->createQRCode($moreParams, $object);
                 $moduleNameLowerCase = 'gmao';
                 $permissiontoadd     = $user->rights->ticket->write;
+            }
 
-                require __DIR__ . '/../../saturne/core/tpl/documents/documents_action.tpl.php';
+            if ($action == 'remove_file' && preg_match('/\bgmaoticketdocument\b/', GETPOST('file'))) {
+                $upload_dir         = $conf->gmao->multidir_output[$conf->entity ?? 1];
+                $permissiontodelete = $user->rights->ticket->delete;
             }
 
             if ($action == 'pdfGeneration') {
@@ -183,9 +190,13 @@ class ActionsGmao
             }
 
             if ($action == 'generate_qrcode') {
+                $thirdParty = new Societe($this->db);
+
+                $thirdParty->fetch($object->fk_soc);
+
                 $moreParams = [
                     'gmaoclientticketdocument' => [
-                        'url' => 'public/ticket/view.php?track_id=' . $object->track_id . '&entity=' . $conf->entity
+                        'url' => 'public/ticket/view.php?track_id=' . $object->track_id . (dol_strlen($thirdParty->email) > 0 ? '&email=' . $thirdParty->email : '') . '&entity=' . $conf->entity
                     ],
                 ];
 
@@ -193,7 +204,83 @@ class ActionsGmao
                 header('Location: ' . $_SERVER['PHP_SELF'] . '?id=' . $object->id);
                 exit;
             }
+
+            require __DIR__ . '/../../saturne/core/tpl/documents/documents_action.tpl.php';
         }
+
+        if (strpos($parameters['context'], 'inventorycard') !== false) {
+            if (GETPOST('importMassBatch', 'alpha') && ! empty($conf->global->MAIN_UPLOAD_DOC)) {
+                // Submit file
+                if (!empty($_FILES)) {
+                    $error = 0;
+                    if (pathinfo($_FILES['importMassBatch']['name'][0], PATHINFO_EXTENSION) != 'csv') {
+                        setEventMessages($langs->trans('ErrorWrongFileNameExtension', $_FILES['importMassBatch']['name'][0]), [], 'errors');
+                    } else {
+                        if (is_array($_FILES['importMassBatch']['tmp_name'])) {
+                            $files = $_FILES['importMassBatch']['tmp_name'];
+                        } else {
+                            $files = [$_FILES['importMassBatch']['tmp_name']];
+                        }
+
+                        foreach ($files as $key => $file) {
+                            if (empty($_FILES['importMassBatch']['tmp_name'][$key])) {
+                                $error++;
+                                if ($_FILES['importMassBatch']['error'][$key] == 1 || $_FILES['importMassBatch']['error'][$key] == 2) {
+                                    setEventMessages($langs->trans('ErrorFileSizeTooLarge'), [], 'errors');
+                                } else {
+                                    setEventMessages($langs->trans('ErrorFieldRequired', $langs->transnoentitiesnoconv('File')), [], 'errors');
+                                }
+                            }
+                        }
+
+                        if (!$error) {
+                            $fileDir = $conf->gmao->multidir_output[$conf->entity ?? 1] . '/temp/';
+                            if (!empty($fileDir)) {
+                                require_once DOL_DOCUMENT_ROOT . '/core/lib/files.lib.php';
+                                dol_add_file_process($fileDir, 0, 1, 'importMassBatch', '', null, '', 0);
+                            }
+
+                            $filePath = $fileDir . '/' . $_FILES['importMassBatch']['name'][0];
+                            $fileCSV  = fopen($filePath, 'r');
+                            if ($fileCSV !== false) {
+                                $headers         = fgetcsv($fileCSV);
+                                $expectedHeaders = ['FK_STOCK', 'FK_PRODUCT', 'BATCH', 'QTY'];
+                                if ($headers === $expectedHeaders) {
+                                    $dataCSV = [];
+                                    while (($row = fgetcsv($fileCSV)) !== false) {
+                                        $dataCSV[] = $row;
+                                    }
+                                    fclose($fileCSV);
+                                    unset($dataCSV[0]);
+
+                                    foreach ($dataCSV as $cell) {
+                                        $inventoryLine = new InventoryLine($this->db);
+                                        $inventoryLine->fk_inventory = $object->id;
+                                        $inventoryLine->datec        = dol_now();
+                                        $inventoryLine->fk_warehouse = $cell[0];
+                                        $inventoryLine->fk_product   = $cell[1];
+                                        $inventoryLine->batch        = $cell[2];
+                                        $inventoryLine->qty_view     = $cell[3];
+
+                                        $inventoryLine->create($user);
+                                    }
+
+                                    unlink($filePath);
+                                    header('Location: ' . $_SERVER['PHP_SELF'] . '?id=' . $object->id);
+                                    exit;
+                                } else {
+                                    fclose($fileCSV);
+                                    setEventMessages($langs->trans('ErrorInvalidHeaders', 'FK_STOCK, FK_PRODUCT, BATCH, QTY'), [], 'errors');
+                                }
+                            } else {
+                                setEventMessages($langs->trans('ErrorFileNotFound'), [], 'errors');
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         return 0; // or return 1 to replace standard code
     }
 
@@ -283,6 +370,17 @@ class ActionsGmao
                 </script>
                 <?php
             }
+        }
+
+        if (strpos($parameters['context'], 'inventorycard') !== false) {
+            $out  = '<input type="file" name="importMassBatch[]" id="import-mass-batch" />';
+            $out .= '<input type="submit" class="button reposition" name="importMassBatch" value="' . $langs->trans('ImportMassBatch') . '">'; ?>
+
+            <script>
+                jQuery('#formrecord').attr('enctype', 'multipart/form-data');
+                jQuery('center').first().append(<?php echo json_encode($out); ?>);
+            </script>
+            <?php
         }
 
         return 0; // or return 1 to replace standard code

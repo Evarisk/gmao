@@ -78,7 +78,7 @@ class modGMAO extends DolibarrModules
         $this->editor_url  = 'https://evarisk.com';
 
         // Possible values for version are: 'development', 'experimental', 'dolibarr', 'dolibarr_deprecated' or a version string like 'x.y.z'
-        $this->version = '1.0.0';
+        $this->version = '1.1.0';
 
         // Url to the file with your last numberversion of this module
         //$this->url_last_version = 'http://www.example.com/versionmodule.txt';
@@ -119,7 +119,8 @@ class modGMAO extends DolibarrModules
             // Set here all hooks context managed by module. To find available hook context, make a "grep -r '>initHooks(' *" on source code. You can also set hook context to 'all'
             'hooks' => [
                 'ticketcard',
-                'gmaoadmindocuments'
+                'gmaoadmindocuments',
+                'inventorycard'
             ],
             // Set this to 1 if features of module are opened to external users
             'moduleforexternal' => 0
@@ -267,7 +268,7 @@ class modGMAO extends DolibarrModules
      */
     public function init($options = ''): int
     {
-        global $conf;
+        global $conf, $db, $langs;
 
         // Permissions
         $this->remove($options);
@@ -282,6 +283,17 @@ class modGMAO extends DolibarrModules
         delDocumentModel('gmaoticketdocument_odt', 'gmaoticketdocument');
 
         addDocumentModel('gmaoticketdocument_odt', 'gmaoticketdocument', 'ODT templates', 'GMAO_GMAOTICKETDOCUMENT_ADDON_ODT_PATH');
+
+        if (getDolGlobalInt('GMAO_TICKET_MAIN_CATEGORIES_SET') == 0) {
+            $tagParentID = saturne_create_category($langs->transnoentities('GMAO'), 'ticket', 0, 'pictogram_GMAO_64px.png');
+
+            saturne_create_category($langs->transnoentities('Preventive'), 'ticket', $tagParentID, 'pictogram_Preventive_64px.png');
+            saturne_create_category($langs->transnoentities('Curative'), 'ticket', $tagParentID, 'pictogram_Curative_64px.png');
+            saturne_create_category($langs->transnoentities('Improvement'), 'ticket', $tagParentID, 'pictogram_Improvement_64px.png');
+
+            dolibarr_set_const($db, 'GMAO_TICKET_MAIN_CATEGORY', $tagParentID, 'integer', 0, '', $conf->entity);
+            dolibarr_set_const($db, 'GMAO_TICKET_MAIN_CATEGORIES_SET', 1, 'integer', 0, '', $conf->entity);
+        }
 
         return $this->_init($sql, $options);
     }

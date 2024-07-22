@@ -23,6 +23,11 @@ ModuleGMAODesc      = Gestion de maintenance au travers des tickets
 GMAODescription     = Gestion de maintenance au travers des tickets
 GMAODescriptionLong = Gestion de maintenance au travers des tickets
 
+# Tags - Catégories
+Preventive  = Préventive
+Curative    = Curative
+Improvement = Amélioration
+
 
 
 #
@@ -55,8 +60,18 @@ ErrorConfigProposalService = Impossible de créer une proposition de maintenance
 # Data - Donnée
 GMAOTicketDocument            = Tickets GMAO
 gmaoclientticketdocument.odt  = Ticket client
-gmaoclientticketdocument      = Ticket client
+gmaoclientticketdocument      = ticket client
 gmaotechticketdocument.odt    = Ticket interne
-gmaotechticketdocument        = Ticket interne
+gmaotechticketdocument        = ticket interne
 gmaospecialticketdocument.odt = Ticket client et ticket interne
-gmaospecialticketdocument     = Ticket client et ticket interne
+gmaospecialticketdocument     = ticket client et ticket interne
+
+
+
+#
+# Other - Autres
+#
+
+# Data - Donnée
+ImportMassBatch     = Import en masse de lot/série
+ErrorInvalidHeaders = Erreur : mauvaise en-tête de fichier %s
