@@ -246,14 +246,14 @@ class ActionsGmao
                                 $headers         = fgetcsv($fileCSV);
                                 $expectedHeaders = ['FK_STOCK', 'FK_PRODUCT', 'BATCH', 'QTY'];
                                 if ($headers === $expectedHeaders) {
-                                    $CSVData = [];
+                                    $dataCSV = [];
                                     while (($row = fgetcsv($fileCSV)) !== false) {
-                                        $CSVData[] = $row;
+                                        $dataCSV[] = $row;
                                     }
                                     fclose($fileCSV);
-                                    unset($CSVData[0]);
+                                    unset($dataCSV[0]);
 
-                                    foreach ($CSVData as $cell) {
+                                    foreach ($dataCSV as $cell) {
                                         $inventoryLine = new InventoryLine($this->db);
                                         $inventoryLine->fk_inventory = $object->id;
                                         $inventoryLine->datec        = dol_now();
