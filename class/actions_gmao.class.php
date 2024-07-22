@@ -148,7 +148,7 @@ class ActionsGmao
                 header('Location: ' . DOL_URL_ROOT . '/comm/propal/card.php?id=' . $propalID);
                 exit;
             }
-            
+
             if ($action == 'builddoc' && preg_match('/\bgmaoticketdocument_odt\b/', GETPOST('model'))) {
                 $moreParams = [
                     'gmaoclientticketdocument' => [
@@ -246,8 +246,10 @@ class ActionsGmao
                 $publicInterfaceUrl = dol_buildpath('public/ticket/view.php?track_id=' . $object->track_id . '&entity=' . $conf->entity, 3);
                 $out  = '<tr><td class="titlefield">' . $langs->trans('PublicInterface') . ' <a href="' . $publicInterfaceUrl . '" target="_blank"><i class="fas fa-qrcode"></i></a>';
                 $out .= showValueWithClipboardCPButton($publicInterfaceUrl, 0, '&nbsp;');
-                $out .= '<a class="reposition" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=generate_qrcode&token=' . newToken() . '">';
-                $out .= img_picto($langs->trans('Generate'), 'fontawesome_fa-redo_fas_#444', 'class="paddingleft"') . '</a>';
+                if (!file_exists($conf->ticket->multidir_output[$conf->entity] . '/' . $object->ref . '/qrcode/')) {
+                    $out .= '<a class="reposition" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=generate_qrcode&token=' . newToken() . '">';
+                    $out .= img_picto($langs->trans('Generate'), 'fontawesome_fa-redo_fas_#444', 'class="paddingleft"') . '</a>';
+                }
                 $out .= '</td>';
                 $out .= '<td>' . saturne_show_medias_linked('ticket', $conf->ticket->multidir_output[$conf->entity] . '/' . $object->ref . '/qrcode/', 'small', 1, 0, 0, 0, 80, 80, 0, 0, 0, $object->ref . '/qrcode/', $object, '', 0, 0) . '</td>';
                 $out .= '</tr>';
