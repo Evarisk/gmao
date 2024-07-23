@@ -147,7 +147,7 @@ print '<td class="center">' . $langs->trans('Action') . '</td>';
 print '<td class="center">' . $langs->trans('ShortInfo') . '</td>';
 print '</tr>';
 
-if (!isModEnabled('categorie')) {
+if (isModEnabled('categorie')) {
     print '<tr><td>' . $langs->trans('GenerateGMAOTicketCategories') . '</td>';
     print '<td class="center">';
     print getDolGlobalInt('GMAO_TICKET_CATEGORIES_SET') ? $langs->trans('AlreadyGenerated') : $langs->trans('NotCreated');
