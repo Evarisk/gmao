@@ -63,6 +63,21 @@ if ($action == 'update') {
     exit;
 }
 
+if ($action == 'generate_ticket_categories' && isModEnabled('categorie')) {
+    $tagParentID = saturne_create_category($langs->transnoentities('GMAO'), 'ticket', 0, 'pictogram_GMAO_64px.png');
+
+    saturne_create_category($langs->transnoentities('Preventive'), 'ticket', $tagParentID, 'pictogram_Preventive_64px.png');
+    saturne_create_category($langs->transnoentities('Curative'), 'ticket', $tagParentID, 'pictogram_Curative_64px.png');
+    saturne_create_category($langs->transnoentities('Improvement'), 'ticket', $tagParentID, 'pictogram_Improvement_64px.png');
+
+    dolibarr_set_const($db, 'GMAO_TICKET_MAIN_CATEGORY', $tagParentID, 'integer', 0, '', $conf->entity);
+    dolibarr_set_const($db, 'GMAO_TICKET_CATEGORIES_SET', 1, 'integer', 0, '', $conf->entity);
+
+    setEventMessage('SavedConfig');
+    header('Location: ' . $_SERVER['PHP_SELF']);
+    exit;
+}
+
 /*
  * View
  */
@@ -116,6 +131,39 @@ $constArray['gmao'] = [
     ]
 ];
 require __DIR__ . '/../../saturne/core/tpl/admin/object/object_const_view.tpl.php';
+
+// Generate categories
+print load_fiche_titre($langs->trans('ConfigGMAOTicketCategories'), '', '');
+
+print '<form method="POST" action="' . $_SERVER['PHP_SELF'] . '">';
+print '<input type="hidden" name="token" value="' . newToken() . '">';
+print '<input type="hidden" name="action" value="generate_ticket_categories">';
+
+print '<table class="noborder centpercent">';
+print '<tr class="liste_titre">';
+print '<td>' . $langs->trans('Name') . '</td>';
+print '<td class="center">' . $langs->trans('Status') . '</td>';
+print '<td class="center">' . $langs->trans('Action') . '</td>';
+print '<td class="center">' . $langs->trans('ShortInfo') . '</td>';
+print '</tr>';
+
+if (!isModEnabled('categorie')) {
+    print '<tr><td>' . $langs->trans('GenerateGMAOTicketCategories') . '</td>';
+    print '<td class="center">';
+    print getDolGlobalInt('GMAO_TICKET_CATEGORIES_SET') ? $langs->trans('AlreadyGenerated') : $langs->trans('NotCreated');
+    print '</td>';
+    print '<td class="center">';
+    print getDolGlobalInt('GMAO_TICKET_CATEGORIES_SET') ? '<a class="butActionRefused">' . $langs->trans('Create') . '</a>' : '<input type="submit" class="button" value="' . $langs->trans('Create') . '">';
+    print '</td>';
+    print '<td class="center">';
+    print $form->textwithpicto('', $langs->trans('GenerateGMAOTicketCategoriesDescription'));
+    print '</td></tr>';
+} else {
+    print '<tr><td colspan="4">' . $langs->trans('EnableCategory') . '</td></tr>';
+}
+
+print '</table>';
+print '</form>';
 
 // Page end
 print dol_get_fiche_end();

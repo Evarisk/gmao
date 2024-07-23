@@ -141,7 +141,7 @@ class modGMAO extends DolibarrModules
         $this->hidden = false;
 
         // List of module class names as string that must be enabled if this module is enabled. Example: array('always1'=>'modModuleToEnable1','always2'=>'modModuleToEnable2', 'FR1'=>'modModuleToEnableFR'...)
-        $this->depends      = ['modSociete', 'modService', 'modProjet', 'modPropale', 'modTicket', 'modSaturne'];
+        $this->depends      = ['modSociete', 'modService', 'modProjet', 'modPropale', 'modTicket', 'modSaturne', 'modCategorie'];
         $this->requiredby   = []; // List of module class names as string to disable if this one is disabled. Example: array('modModuleToDisable1', ...)
         $this->conflictwith = []; // List of module class names as string this module is in conflict with. Example: array('modModuleToDisable1', ...)
 
@@ -283,17 +283,6 @@ class modGMAO extends DolibarrModules
         delDocumentModel('gmaoticketdocument_odt', 'gmaoticketdocument');
 
         addDocumentModel('gmaoticketdocument_odt', 'gmaoticketdocument', 'ODT templates', 'GMAO_GMAOTICKETDOCUMENT_ADDON_ODT_PATH');
-
-        if (getDolGlobalInt('GMAO_TICKET_MAIN_CATEGORIES_SET') == 0) {
-            $tagParentID = saturne_create_category($langs->transnoentities('GMAO'), 'ticket', 0, 'pictogram_GMAO_64px.png');
-
-            saturne_create_category($langs->transnoentities('Preventive'), 'ticket', $tagParentID, 'pictogram_Preventive_64px.png');
-            saturne_create_category($langs->transnoentities('Curative'), 'ticket', $tagParentID, 'pictogram_Curative_64px.png');
-            saturne_create_category($langs->transnoentities('Improvement'), 'ticket', $tagParentID, 'pictogram_Improvement_64px.png');
-
-            dolibarr_set_const($db, 'GMAO_TICKET_MAIN_CATEGORY', $tagParentID, 'integer', 0, '', $conf->entity);
-            dolibarr_set_const($db, 'GMAO_TICKET_MAIN_CATEGORIES_SET', 1, 'integer', 0, '', $conf->entity);
-        }
 
         return $this->_init($sql, $options);
     }
