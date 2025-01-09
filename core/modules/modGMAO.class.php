@@ -67,7 +67,6 @@ class modGMAO extends DolibarrModules
         $this->familyinfo = ['Evarisk' => ['position' => '01', 'label' => 'Evarisk']];
         // Module label (no space allowed), used if translation string 'ModuleGMAOName' not found (GMAO is name of module)
         $this->name = preg_replace('/^mod/i', '', get_class($this));
-
         // Module description, used if translation string 'ModuleGMAODesc' not found (GMAO is name of module)
         $this->description = $langs->trans('GMAODescription');
         // Used only if file README.md and README-LL.md not found
@@ -120,7 +119,9 @@ class modGMAO extends DolibarrModules
             'hooks' => [
                 'ticketcard',
                 'gmaoadmindocuments',
-                'inventorycard'
+                'inventorycard',
+                'product_lotlist',
+                'productlotcard'
             ],
             // Set this to 1 if features of module are opened to external users
             'moduleforexternal' => 0
@@ -268,7 +269,7 @@ class modGMAO extends DolibarrModules
      */
     public function init($options = ''): int
     {
-        global $conf, $db, $langs;
+        global $conf, $db, $langs, $user;
 
         // Permissions
         $this->remove($options);
@@ -284,6 +285,14 @@ class modGMAO extends DolibarrModules
 
         addDocumentModel('gmaoticketdocument_odt', 'gmaoticketdocument', 'ODT templates', 'GMAO_GMAOTICKETDOCUMENT_ADDON_ODT_PATH');
 
+        // Create extrafields during init
+        include_once DOL_DOCUMENT_ROOT . '/core/class/extrafields.class.php';
+
+        $extra_fields = new ExtraFields($this->db);
+
+        $extra_fields->update('warehouse', 'WareHouse', 'link', '', 'product_lot', 0, 0, $this->numero . 10, ['options' => ['Entrepot:product/stock/class/entrepot.class.php' => NULL]], 1, $user->hasRight('stock', 'lire'), 1, '', '', '', 0, 'stocks', "isModEnabled('gmao') && isModEnabled('stock') && isModEnabled('productbatch')", 0, 0, ['csslist' => 'minwidth100 maxwidth300']);
+        $extra_fields->addExtraField('warehouse', 'WareHouse', 'link', $this->numero . 10, '', 'product_lot     ', 0, 0, '', ['options' => ['Entrepot:product/stock/class/entrepot.class.php' => NULL]], 1, $user->hasRight('stock', 'lire'), 1, '', '', 0, 'stocks', "isModEnabled('gmao')  && isModEnabled('stock') && isModEnabled('productbatch')", 0, 0, ['csslist' => 'minwidth100 maxwidth300']);
+        
         return $this->_init($sql, $options);
     }
 

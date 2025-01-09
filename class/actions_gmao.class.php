@@ -87,6 +87,26 @@ class ActionsGmao
     }
 
     /**
+     * Overloading the formObjectOptions function : replacing the parent's function with the one below
+     *
+     * @param  array     $parameters Hook metadatas (context, etc...)
+     * @return int                   0 < on error, 0 on success, 1 to replace standard code
+     * @throws Exception
+     */
+    public function formObjectOptions(array $parameters, $object, $action): int
+    {
+        global $extrafields, $langs;
+
+        if (strpos($parameters['context'], 'productlotcard') !== false) {
+            $pictoPath = dol_buildpath('/gmao/img/gmao_color.png', 1);
+            $picto     = img_picto('', $pictoPath, '', 1, 0, 0, '', 'pictoModule marginrightonly');
+
+            $extrafields->attributes['product_lot']['label']['warehouse'] = $picto . $langs->transnoentities('Warehouse');
+        }
+        return 0;
+    }
+
+    /**
      * Overloading the doActions function : replacing the parent's function with the one below
      *
      * @param  array  $parameters Hook metadata (context, etc...)
@@ -316,6 +336,27 @@ class ActionsGmao
     }
 
     /**
+     * Overloading the printFieldListOption function : replacing the parent's function with the one below
+     *
+     * @param  array     $parameters Hook metadatas (context, etc...)
+     * @return int                   0 < on error, 0 on success, 1 to replace standard code
+     * @throws Exception
+     */
+    public function printFieldListOption(array $parameters): int
+    {
+        global $extrafields, $langs;
+
+        if (strpos($parameters['context'], 'product_lotlist') !== false) {
+            $pictoPath = dol_buildpath('/gmao/img/gmao_color.png', 1);
+            $picto     = img_picto('', $pictoPath, '', 1, 0, 0, '', 'pictoModule');
+
+            $extrafields->attributes['product_lot']['label']['warehouse'] = $picto . $langs->transnoentities('Warehouse');
+        }
+
+        return 0;
+    }
+
+    /**
      * Overloading the printCommonFooter function : replacing the parent's function with the one below
      *
      * @param  array     $parameters Hook metadatas (context, etc...)
@@ -325,6 +366,7 @@ class ActionsGmao
     public function printCommonFooter(array $parameters): int
     {
         global $conf, $langs, $object;
+
 
         if (strpos($parameters['context'], 'ticketcard') !== false) {
             if (getDolGlobalInt('TICKET_ENABLE_PUBLIC_INTERFACE')) {
