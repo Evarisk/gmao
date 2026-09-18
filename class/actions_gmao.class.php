@@ -293,7 +293,7 @@ class ActionsGmao
                                     setEventMessages($langs->trans('ErrorInvalidHeaders', 'FK_STOCK, FK_PRODUCT, BATCH, QTY'), [], 'errors');
                                 }
                             } else {
-                                setEventMessages($langs->trans('ErrorFileNotFound'), [], 'errors');
+                                setEventMessages($langs->trans('ErrorFileNotFound', $filePath), [], 'errors');
                             }
                         }
                     }
