@@ -21,3 +21,5 @@
 /.gitattributes
 node_modules
 package-lock.json
+# PHPStan cache
+/.github/tmp/phpstan

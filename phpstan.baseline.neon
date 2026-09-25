@@ -1,0 +1,337 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Variable \$form might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: admin/setup.php
+
+		-
+			message: '#^Method ActionsGmao\:\:addMoreActionsButtons\(\) has parameter \$action with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: class/actions_gmao.class.php
+
+		-
+			message: '#^Method ActionsGmao\:\:formObjectOptions\(\) has parameter \$action with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: class/actions_gmao.class.php
+
+		-
+			message: '#^Method ActionsGmao\:\:formObjectOptions\(\) has parameter \$object with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: class/actions_gmao.class.php
+
+		-
+			message: '#^Property InventoryLine\:\:\$fk_product \(int\) does not accept string\|null\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: class/actions_gmao.class.php
+
+		-
+			message: '#^Property InventoryLine\:\:\$fk_warehouse \(int\) does not accept string\|null\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: class/actions_gmao.class.php
+
+		-
+			message: '#^Property InventoryLine\:\:\$qty_view \(float\|null\) does not accept string\|null\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: class/actions_gmao.class.php
+
+		-
+			message: '#^Class DoliDB referenced with incorrect case\: DoliDb\.$#'
+			identifier: class.nameCase
+			count: 1
+			path: class/gmaodocuments/gmaoticketdocument.class.php
+
+		-
+			message: '#^Method GMAOTicketDocument\:\:createQRCode\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: class/gmaodocuments/gmaoticketdocument.class.php
+
+		-
+			message: '#^Call to an undefined method Translate\:\:load\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: core/modules/gmao/gmaodocuments/gmaoticketdocument/doc_gmaoticketdocument_odt.modules.php
+
+		-
+			message: '#^Call to an undefined method User\:\:fetch\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: core/modules/gmao/gmaodocuments/gmaoticketdocument/doc_gmaoticketdocument_odt.modules.php
+
+		-
+			message: '#^Call to an undefined method User\:\:getFullName\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: core/modules/gmao/gmaodocuments/gmaoticketdocument/doc_gmaoticketdocument_odt.modules.php
+
+		-
+			message: '#^Class User constructor invoked with 1 parameter, 0 required\.$#'
+			identifier: arguments.count
+			count: 1
+			path: core/modules/gmao/gmaodocuments/gmaoticketdocument/doc_gmaoticketdocument_odt.modules.php
+
+		-
+			message: '#^Access to an undefined property modGMAO\:\:\$boxes\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modGMAO.class.php
+
+		-
+			message: '#^Access to an undefined property modGMAO\:\:\$config_page_url\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modGMAO.class.php
+
+		-
+			message: '#^Access to an undefined property modGMAO\:\:\$conflictwith\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modGMAO.class.php
+
+		-
+			message: '#^Access to an undefined property modGMAO\:\:\$const\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modGMAO.class.php
+
+		-
+			message: '#^Access to an undefined property modGMAO\:\:\$const_name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modGMAO.class.php
+
+		-
+			message: '#^Access to an undefined property modGMAO\:\:\$cronjobs\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modGMAO.class.php
+
+		-
+			message: '#^Access to an undefined property modGMAO\:\:\$db\.$#'
+			identifier: property.notFound
+			count: 5
+			path: core/modules/modGMAO.class.php
+
+		-
+			message: '#^Access to an undefined property modGMAO\:\:\$depends\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modGMAO.class.php
+
+		-
+			message: '#^Access to an undefined property modGMAO\:\:\$description\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modGMAO.class.php
+
+		-
+			message: '#^Access to an undefined property modGMAO\:\:\$descriptionlong\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modGMAO.class.php
+
+		-
+			message: '#^Access to an undefined property modGMAO\:\:\$dictionaries\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modGMAO.class.php
+
+		-
+			message: '#^Access to an undefined property modGMAO\:\:\$dirs\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modGMAO.class.php
+
+		-
+			message: '#^Access to an undefined property modGMAO\:\:\$editor_url\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modGMAO.class.php
+
+		-
+			message: '#^Access to an undefined property modGMAO\:\:\$error\.$#'
+			identifier: property.notFound
+			count: 2
+			path: core/modules/modGMAO.class.php
+
+		-
+			message: '#^Access to an undefined property modGMAO\:\:\$errors\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modGMAO.class.php
+
+		-
+			message: '#^Access to an undefined property modGMAO\:\:\$family\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modGMAO.class.php
+
+		-
+			message: '#^Access to an undefined property modGMAO\:\:\$familyinfo\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modGMAO.class.php
+
+		-
+			message: '#^Access to an undefined property modGMAO\:\:\$hidden\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modGMAO.class.php
+
+		-
+			message: '#^Access to an undefined property modGMAO\:\:\$langfiles\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modGMAO.class.php
+
+		-
+			message: '#^Access to an undefined property modGMAO\:\:\$max_dolibarr_version\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modGMAO.class.php
+
+		-
+			message: '#^Access to an undefined property modGMAO\:\:\$menu\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modGMAO.class.php
+
+		-
+			message: '#^Access to an undefined property modGMAO\:\:\$module_parts\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modGMAO.class.php
+
+		-
+			message: '#^Access to an undefined property modGMAO\:\:\$module_position\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modGMAO.class.php
+
+		-
+			message: '#^Access to an undefined property modGMAO\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modGMAO.class.php
+
+		-
+			message: '#^Access to an undefined property modGMAO\:\:\$need_dolibarr_version\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modGMAO.class.php
+
+		-
+			message: '#^Access to an undefined property modGMAO\:\:\$phpmin\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modGMAO.class.php
+
+		-
+			message: '#^Access to an undefined property modGMAO\:\:\$picto\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modGMAO.class.php
+
+		-
+			message: '#^Access to an undefined property modGMAO\:\:\$requiredby\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modGMAO.class.php
+
+		-
+			message: '#^Access to an undefined property modGMAO\:\:\$rights\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modGMAO.class.php
+
+		-
+			message: '#^Access to an undefined property modGMAO\:\:\$rights_class\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modGMAO.class.php
+
+		-
+			message: '#^Access to an undefined property modGMAO\:\:\$tabs\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modGMAO.class.php
+
+		-
+			message: '#^Access to an undefined property modGMAO\:\:\$warnings_activation\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modGMAO.class.php
+
+		-
+			message: '#^Access to an undefined property modGMAO\:\:\$warnings_activation_ext\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modGMAO.class.php
+
+		-
+			message: '#^Call to an undefined method modGMAO\:\:_init\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: core/modules/modGMAO.class.php
+
+		-
+			message: '#^Call to an undefined method modGMAO\:\:_remove\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: core/modules/modGMAO.class.php
+
+		-
+			message: '#^Parameter \#12 \$list of method ExtraFields\:\:update\(\) expects string, int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: core/modules/modGMAO.class.php
+
+		-
+			message: '#^Parameter \#13 \$list of method ExtraFields\:\:addExtraField\(\) expects string, int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: core/modules/modGMAO.class.php
+
+		-
+			message: '#^Parameter \#16 \$entity of method ExtraFields\:\:addExtraField\(\) expects string, int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: core/modules/modGMAO.class.php
+
+		-
+			message: '#^Parameter \#16 \$entity of method ExtraFields\:\:update\(\) expects string, int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: core/modules/modGMAO.class.php
+
+		-
+			message: '#^Parameter \#4 \$pos of method ExtraFields\:\:addExtraField\(\) expects int, string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: core/modules/modGMAO.class.php
+
+		-
+			message: '#^Parameter \#8 \$pos of method ExtraFields\:\:update\(\) expects int\<0, 1\>, non\-falsy\-string&numeric\-string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: core/modules/modGMAO.class.php
+
+		-
+			message: '#^Parameter \#2 \$ticket of method GMAOTicketDocument\:\:createQRCode\(\) expects Ticket, CommonObject given\.$#'
+			identifier: argument.type
+			count: 1
+			path: core/triggers/interface_99_modGmao_GmaoTriggers.class.php
+
+		-
+			message: '#^Property DolibarrTriggers\:\:\$version \(''''\|''development''\|''dolibarr''\|''experimental''\) does not accept ''1\.1\.0''\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: core/triggers/interface_99_modGmao_GmaoTriggers.class.php
