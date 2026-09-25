@@ -30,6 +30,11 @@ require_once DOL_DOCUMENT_ROOT . '/core/triggers/dolibarrtriggers.class.php';
 class InterfaceGMAOTriggers extends DolibarrTriggers
 {
     /**
+     * @var string Trigger version.
+     */
+    public $version;
+
+    /**
      * @var DoliDB Database handler
      */
     protected $db;
