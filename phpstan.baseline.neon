@@ -335,3 +335,8 @@ parameters:
 			identifier: assign.propertyType
 			count: 1
 			path: core/triggers/interface_99_modGmao_GmaoTriggers.class.php
+		-
+			message: '#^Property DolibarrModules\:\:\$menu \(1\|array\<array\{commentgroup\?\: string, mainmenu\: string, leftmenu\: string, langs\: string, enabled\: int\|string, target\: string, titre\: string, user\: int, \.\.\.\}\>\) does not accept non\-empty\-array\<array\{commentgroup\?\: string, mainmenu\: string, leftmenu\: string, langs\: string, enabled\: int\|string, target\: string, titre\: string, user\: int, \.\.\.\}\|array\{fk_menu\: ''fk_mainmenu\=tools'', type\: ''left'', titre\: ''GMAO'', prefix\: ''\<i class\="fas fa…'', mainmenu\: ''tools'', leftmenu\: ''gmao'', url\: ''/gmao/admin/setup…'', langs\: ''gmao@gmao'', \.\.\.\}\>\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: core/modules/modGMAO.class.php
