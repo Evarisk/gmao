@@ -292,7 +292,7 @@ class modGMAO extends DolibarrModules
         $extra_fields = new ExtraFields($this->db);
 
         $extra_fields->update('warehouse', 'WareHouse', 'link', '', 'product_lot', 0, 0, $this->numero . 10, ['options' => ['Entrepot:product/stock/class/entrepot.class.php' => NULL]], 1, $user->hasRight('stock', 'lire'), 1, '', '', '', 0, 'stocks', "isModEnabled('gmao') && isModEnabled('stock') && isModEnabled('productbatch')", 0, 0, ['csslist' => 'minwidth100 maxwidth300']);
-        $extra_fields->addExtraField('warehouse', 'WareHouse', 'link', $this->numero . 10, '', 'product_lot     ', 0, 0, '', ['options' => ['Entrepot:product/stock/class/entrepot.class.php' => NULL]], 1, $user->hasRight('stock', 'lire'), 1, '', '', 0, 'stocks', "isModEnabled('gmao')  && isModEnabled('stock') && isModEnabled('productbatch')", 0, 0, ['csslist' => 'minwidth100 maxwidth300']);
+        $extra_fields->addExtraField('warehouse', 'WareHouse', 'link', $this->numero . 10, '', 'product_lot', 0, 0, '', ['options' => ['Entrepot:product/stock/class/entrepot.class.php' => NULL]], 1, $user->hasRight('stock', 'lire'), 1, '', '', 0, 'stocks', "isModEnabled('gmao')  && isModEnabled('stock') && isModEnabled('productbatch')", 0, 0, ['csslist' => 'minwidth100 maxwidth300']);
         
         return $this->_init($sql, $options);
     }
