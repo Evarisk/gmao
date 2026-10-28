@@ -130,7 +130,7 @@ $constArray['gmao'] = [
         'code'        => 'GMAO_ENABLE_TICKET_PROPOSAL_GMAO',
     ]
 ];
-require __DIR__ . '/../../saturne/core/tpl/admin/object/object_const_view.tpl.php';
+require dol_buildpath('/saturne/core/tpl/admin/object/object_const_view.tpl.php');
 
 // Generate categories
 print load_fiche_titre($langs->trans('ConfigGMAOTicketCategories'), '', '');

@@ -128,7 +128,7 @@ class ActionsGmao
                 require_once DOL_DOCUMENT_ROOT . '/comm/propal/class/propal.class.php';
 
                 // Load Saturne libraries
-                require_once __DIR__ . '/../../saturne/lib/object.lib.php';
+                dol_include_once('/saturne/lib/object.lib.php');
 
                 $propal = new Propal($this->db);
 
@@ -199,7 +199,7 @@ class ActionsGmao
                 $upload_dir          = $conf->gmao->multidir_output[$conf->entity ?? 1];
 
                 // Action to generate pdf from odt file
-                require __DIR__ . '/../../saturne/core/tpl/documents/saturne_manual_pdf_generation_action.tpl.php';
+                require dol_buildpath('/saturne/core/tpl/documents/saturne_manual_pdf_generation_action.tpl.php');
 
                 $urlToRedirect = $_SERVER['REQUEST_URI'];
                 $urlToRedirect = preg_replace('/#pdfGeneration$/', '', $urlToRedirect);
@@ -225,7 +225,7 @@ class ActionsGmao
                 exit;
             }
 
-            require __DIR__ . '/../../saturne/core/tpl/documents/documents_action.tpl.php';
+            require dol_buildpath('/saturne/core/tpl/documents/documents_action.tpl.php');
         }
 
         if (strpos($parameters['context'], 'inventorycard') !== false) {
@@ -370,7 +370,7 @@ class ActionsGmao
 
         if (strpos($parameters['context'], 'ticketcard') !== false) {
             if (getDolGlobalInt('TICKET_ENABLE_PUBLIC_INTERFACE')) {
-                require_once __DIR__ . '/../../saturne/lib/medias.lib.php';
+                dol_include_once('/saturne/lib/medias.lib.php');
 
                 $publicInterfaceUrl = dol_buildpath('public/ticket/view.php?track_id=' . $object->track_id . '&entity=' . $conf->entity, 3);
                 $out  = '<tr><td class="titlefield">' . $langs->trans('PublicInterface') . ' <a href="' . $publicInterfaceUrl . '" target="_blank"><i class="fas fa-qrcode"></i></a>';
@@ -397,7 +397,7 @@ class ActionsGmao
 
                 $moduleNameLowerCase = 'gmao';
 
-                require_once __DIR__ . '/../../saturne/lib/documents.lib.php';
+                dol_include_once('/saturne/lib/documents.lib.php');
 
                 $upload_dir = $conf->gmao->multidir_output[$object->entity ?? 1];
                 $objRef     = dol_sanitizeFileName($object->ref);
