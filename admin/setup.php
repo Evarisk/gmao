@@ -111,7 +111,7 @@ print '</tr>';
 print '<tr class="oddeven"><td><label for="proposalService">' . $langs->transnoentities('ProposalService') . '</label></td><td>';
 print img_picto('', 'service', 'class="pictofixedwidth"');
 $form->select_produits((GETPOSTISSET('proposalService') ? GETPOST('proposalService', 'int') : getDolGlobalInt('GMAO_PROPOSAL_SERVICE_ID')), 'proposalService', 1, 0, 0, -1, 2, '', 0, [], 0, '1', 0, 'maxwidth500 widthcentpercentminusxx');
-print '<a href="' . DOL_URL_ROOT . '/product/card.php?action=create&type=1&backtopage=' . urlencode(DOL_URL_ROOT . '/custom/gmao/admin/setup.php?proposalService=&#95;&#95;ID&#95;&#95;') . '"> <span class="fa fa-plus-circle valignmiddle" title="' . $langs->transnoentities('AddService') . '"></span></a>';
+print '<a href="' . DOL_URL_ROOT . '/product/card.php?action=create&type=1&backtopage=' . urlencode(dol_buildpath('/gmao/admin/setup.php', 1) . '?proposalService=&#95;&#95;ID&#95;&#95;') . '"> <span class="fa fa-plus-circle valignmiddle" title="' . $langs->transnoentities('AddService') . '"></span></a>';
 print '</td></tr>';
 
 print '</table>';
