@@ -52,7 +52,7 @@ class InterfaceGMAOTriggers extends DolibarrTriggers
         $this->family      = 'demo';
         $this->description = 'GMAO triggers';
         $this->version     = '1.1.0';
-        $this->picto       = 'gmao@gmao';
+        $this->picto       = 'gmao_color@gmao';
     }
 
     /**
