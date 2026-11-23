@@ -109,12 +109,12 @@ class ActionsGmao
     /**
      * Overloading the doActions function : replacing the parent's function with the one below
      *
-     * @param  array  $parameters Hook metadata (context, etc...)
-     * @param  object $object     The object to process
-     * @param  string $action     Current action (if set). Generally create or edit or null
-     * @return int                0 < on error, 0 on success, 1 to replace standard code
+     * @param  array       $parameters Hook metadata (context, etc...)
+     * @param  object      $object     The object to process
+     * @param  string|null $action     Current action (if set). Generally create or edit or null
+     * @return int                     0 < on error, 0 on success, 1 to replace standard code
      */
-    public function doActions(array $parameters, $object, string $action): int
+    public function doActions(array $parameters, $object, ?string $action): int
     {
         global $conf, $langs, $user;
 
