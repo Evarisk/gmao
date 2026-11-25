@@ -119,6 +119,11 @@ class ActionsGmao
         global $conf, $langs, $user;
 
         if (strpos($parameters['context'], 'ticketcard') !== false) {
+            // documents_action.tpl.php, included at the end of this block, runs on the builddoc and remove_file of
+            // every module of the card (Digirisk's ticket documents too): only the branches below grant it the rights
+            $permissiontoadd    = 0;
+            $permissiontodelete = 0;
+
             require_once __DIR__ . '/gmaodocuments/gmaoticketdocument.class.php'; // Load GMAO libraries
 
             $document = new GMAOTicketDocument($this->db);
