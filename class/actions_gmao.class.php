@@ -190,12 +190,12 @@ class ActionsGmao
 
                 $document->createQRCode($moreParams, $object);
                 $moduleNameLowerCase = 'gmao';
-                $permissiontoadd     = $user->rights->ticket->write;
+                $permissiontoadd     = $user->hasRight('ticket', 'write');
             }
 
             if ($action == 'remove_file' && preg_match('/\bgmaoticketdocument\b/', GETPOST('file'))) {
                 $upload_dir         = $conf->gmao->multidir_output[$conf->entity ?? 1];
-                $permissiontodelete = $user->rights->ticket->delete;
+                $permissiontodelete = $user->hasRight('ticket', 'delete');
             }
 
             if ($action == 'pdfGeneration') {
@@ -410,7 +410,7 @@ class ActionsGmao
                 $fileDir    = $upload_dir . '/' . $dirFiles;
                 $urlSource  = $_SERVER['PHP_SELF'] . '?id=' . $object->id;
 
-                $out = saturne_show_documents('gmao:GMAOTicketDocument', $dirFiles, $fileDir, $urlSource, $user->rights->ticket->write, $user->rights->ticket->delete, '', 1, 0, 0, 0, '', '', '', '', '', $object); ?>
+                $out = saturne_show_documents('gmao:GMAOTicketDocument', $dirFiles, $fileDir, $urlSource, $user->hasRight('ticket', 'write'), $user->hasRight('ticket', 'delete'), '', 1, 0, 0, 0, '', '', '', '', '', $object); ?>
 
                 <script>
                     jQuery('.fichehalfleft .div-table-responsive-no-min').first().append(<?php echo json_encode($out) ; ?>);
