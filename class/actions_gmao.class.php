@@ -70,15 +70,18 @@ class ActionsGmao
     public function addHtmlHeader(array $parameters): int
     {
         if (strpos($parameters['context'], 'ticketcard') !== false) {
+            // saturne_asset_full_url() for the assets printed below: without a version, the browser keeps serving the previous release
+            dol_include_once('/saturne/lib/asset.lib.php');
+
             $resourcesRequired = [
                 'css' => '/saturne/css/saturne.min.css',
                 'js'  => '/saturne/js/saturne.min.js'
             ];
 
             $out  = '<!-- Includes CSS added by module saturne -->';
-            $out .= '<link rel="stylesheet" type="text/css" href="' . dol_buildpath($resourcesRequired['css'], 1) . '">';
+            $out .= '<link rel="stylesheet" type="text/css" href="' . saturne_asset_full_url($resourcesRequired['css']) . '">';
             $out .= '<!-- Includes JS added by module saturne -->';
-            $out .= '<script src="' . dol_buildpath($resourcesRequired['js'], 1) . '"></script>';
+            $out .= '<script src="' . saturne_asset_full_url($resourcesRequired['js']) . '"></script>';
 
             $this->resprints = $out;
         }
