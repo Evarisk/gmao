@@ -202,6 +202,7 @@ class ActionsGmao
                 $moduleName          = 'GMAO';
                 $moduleNameLowerCase = strtolower($moduleName);
                 $upload_dir          = $conf->gmao->multidir_output[$conf->entity ?? 1];
+                $permissiontoadd     = $user->hasRight('ticket', 'write');
 
                 // Action to generate pdf from odt file
                 require dol_buildpath('/saturne/core/tpl/documents/saturne_manual_pdf_generation_action.tpl.php');
