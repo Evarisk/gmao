@@ -1,0 +1,103 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Variable \$form might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: admin/setup.php
+
+		-
+			message: '#^Method ActionsGmao\:\:addMoreActionsButtons\(\) has parameter \$action with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: class/actions_gmao.class.php
+
+		-
+			message: '#^Method ActionsGmao\:\:formObjectOptions\(\) has parameter \$action with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: class/actions_gmao.class.php
+
+		-
+			message: '#^Method ActionsGmao\:\:formObjectOptions\(\) has parameter \$object with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: class/actions_gmao.class.php
+
+		-
+			message: '#^Property InventoryLine\:\:\$fk_product \(int\) does not accept string\|null\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: class/actions_gmao.class.php
+
+		-
+			message: '#^Property InventoryLine\:\:\$fk_warehouse \(int\) does not accept string\|null\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: class/actions_gmao.class.php
+
+		-
+			message: '#^Property InventoryLine\:\:\$qty_view \(float\|null\) does not accept string\|null\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: class/actions_gmao.class.php
+
+		-
+			message: '#^Class DoliDB referenced with incorrect case\: DoliDb\.$#'
+			identifier: class.nameCase
+			count: 1
+			path: class/gmaodocuments/gmaoticketdocument.class.php
+
+		-
+			message: '#^Method GMAOTicketDocument\:\:createQRCode\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: class/gmaodocuments/gmaoticketdocument.class.php
+
+		-
+			message: '#^Parameter \#12 \$list of method ExtraFields\:\:update\(\) expects string, int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: core/modules/modGMAO.class.php
+
+		-
+			message: '#^Parameter \#13 \$list of method ExtraFields\:\:addExtraField\(\) expects string, int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: core/modules/modGMAO.class.php
+
+		-
+			message: '#^Parameter \#16 \$entity of method ExtraFields\:\:addExtraField\(\) expects string, int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: core/modules/modGMAO.class.php
+
+		-
+			message: '#^Parameter \#16 \$entity of method ExtraFields\:\:update\(\) expects string, int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: core/modules/modGMAO.class.php
+
+		-
+			message: '#^Parameter \#4 \$pos of method ExtraFields\:\:addExtraField\(\) expects int, string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: core/modules/modGMAO.class.php
+
+		-
+			message: '#^Parameter \#8 \$pos of method ExtraFields\:\:update\(\) expects int\<0, 1\>, non\-falsy\-string&numeric\-string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: core/modules/modGMAO.class.php
+
+		-
+			message: '#^Parameter \#2 \$ticket of method GMAOTicketDocument\:\:createQRCode\(\) expects Ticket, CommonObject given\.$#'
+			identifier: argument.type
+			count: 1
+			path: core/triggers/interface_99_modGmao_GmaoTriggers.class.php
+
+		-
+			message: '#^Property DolibarrModules\:\:\$menu \(1\|array\<array\{commentgroup\?\: string, mainmenu\: string, leftmenu\: string, langs\: string, enabled\: int\|string, target\: string, titre\: string, user\: int, \.\.\.\}\>\) does not accept non\-empty\-array\<array\{commentgroup\?\: string, mainmenu\: string, leftmenu\: string, langs\: string, enabled\: int\|string, target\: string, titre\: string, user\: int, \.\.\.\}\|array\{fk_menu\: ''fk_mainmenu\=tools'', type\: ''left'', titre\: ''GMAO'', prefix\: ''\<i class\="fas fa…'', mainmenu\: ''tools'', leftmenu\: ''gmao'', url\: ''/gmao/admin/setup…'', langs\: ''gmao@gmao'', \.\.\.\}\>\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: core/modules/modGMAO.class.php

@@ -71,8 +71,8 @@ class ActionsGmao
     {
         if (strpos($parameters['context'], 'ticketcard') !== false) {
             $resourcesRequired = [
-                'css' => '/custom/saturne/css/saturne.min.css',
-                'js'  => '/custom/saturne/js/saturne.min.js'
+                'css' => '/saturne/css/saturne.min.css',
+                'js'  => '/saturne/js/saturne.min.js'
             ];
 
             $out  = '<!-- Includes CSS added by module saturne -->';
@@ -87,18 +87,43 @@ class ActionsGmao
     }
 
     /**
+     * Overloading the formObjectOptions function : replacing the parent's function with the one below
+     *
+     * @param  array     $parameters Hook metadatas (context, etc...)
+     * @return int                   0 < on error, 0 on success, 1 to replace standard code
+     * @throws Exception
+     */
+    public function formObjectOptions(array $parameters, $object, $action): int
+    {
+        global $extrafields, $langs;
+
+        if (strpos($parameters['context'], 'productlotcard') !== false) {
+            $pictoPath = dol_buildpath('/gmao/img/gmao_color.png', 1);
+            $picto     = img_picto('', $pictoPath, '', 1, 0, 0, '', 'pictoModule marginrightonly');
+
+            $extrafields->attributes['product_lot']['label']['warehouse'] = $picto . $langs->transnoentities('Warehouse');
+        }
+        return 0;
+    }
+
+    /**
      * Overloading the doActions function : replacing the parent's function with the one below
      *
-     * @param  array  $parameters Hook metadata (context, etc...)
-     * @param  object $object     The object to process
-     * @param  string $action     Current action (if set). Generally create or edit or null
-     * @return int                0 < on error, 0 on success, 1 to replace standard code
+     * @param  array       $parameters Hook metadata (context, etc...)
+     * @param  object      $object     The object to process
+     * @param  string|null $action     Current action (if set). Generally create or edit or null
+     * @return int                     0 < on error, 0 on success, 1 to replace standard code
      */
-    public function doActions(array $parameters, $object, string $action): int
+    public function doActions(array $parameters, $object, ?string $action): int
     {
         global $conf, $langs, $user;
 
         if (strpos($parameters['context'], 'ticketcard') !== false) {
+            // documents_action.tpl.php, included at the end of this block, runs on the builddoc and remove_file of
+            // every module of the card (Digirisk's ticket documents too): only the branches below grant it the rights
+            $permissiontoadd    = 0;
+            $permissiontodelete = 0;
+
             require_once __DIR__ . '/gmaodocuments/gmaoticketdocument.class.php'; // Load GMAO libraries
 
             $document = new GMAOTicketDocument($this->db);
@@ -108,7 +133,7 @@ class ActionsGmao
                 require_once DOL_DOCUMENT_ROOT . '/comm/propal/class/propal.class.php';
 
                 // Load Saturne libraries
-                require_once __DIR__ . '/../../saturne/lib/object.lib.php';
+                dol_include_once('/saturne/lib/object.lib.php');
 
                 $propal = new Propal($this->db);
 
@@ -165,12 +190,12 @@ class ActionsGmao
 
                 $document->createQRCode($moreParams, $object);
                 $moduleNameLowerCase = 'gmao';
-                $permissiontoadd     = $user->rights->ticket->write;
+                $permissiontoadd     = $user->hasRight('ticket', 'write');
             }
 
             if ($action == 'remove_file' && preg_match('/\bgmaoticketdocument\b/', GETPOST('file'))) {
                 $upload_dir         = $conf->gmao->multidir_output[$conf->entity ?? 1];
-                $permissiontodelete = $user->rights->ticket->delete;
+                $permissiontodelete = $user->hasRight('ticket', 'delete');
             }
 
             if ($action == 'pdfGeneration') {
@@ -179,7 +204,7 @@ class ActionsGmao
                 $upload_dir          = $conf->gmao->multidir_output[$conf->entity ?? 1];
 
                 // Action to generate pdf from odt file
-                require __DIR__ . '/../../saturne/core/tpl/documents/saturne_manual_pdf_generation_action.tpl.php';
+                require dol_buildpath('/saturne/core/tpl/documents/saturne_manual_pdf_generation_action.tpl.php');
 
                 $urlToRedirect = $_SERVER['REQUEST_URI'];
                 $urlToRedirect = preg_replace('/#pdfGeneration$/', '', $urlToRedirect);
@@ -205,7 +230,7 @@ class ActionsGmao
                 exit;
             }
 
-            require __DIR__ . '/../../saturne/core/tpl/documents/documents_action.tpl.php';
+            require dol_buildpath('/saturne/core/tpl/documents/documents_action.tpl.php');
         }
 
         if (strpos($parameters['context'], 'inventorycard') !== false) {
@@ -273,7 +298,7 @@ class ActionsGmao
                                     setEventMessages($langs->trans('ErrorInvalidHeaders', 'FK_STOCK, FK_PRODUCT, BATCH, QTY'), [], 'errors');
                                 }
                             } else {
-                                setEventMessages($langs->trans('ErrorFileNotFound'), [], 'errors');
+                                setEventMessages($langs->trans('ErrorFileNotFound', $filePath), [], 'errors');
                             }
                         }
                     }
@@ -316,6 +341,27 @@ class ActionsGmao
     }
 
     /**
+     * Overloading the printFieldListOption function : replacing the parent's function with the one below
+     *
+     * @param  array     $parameters Hook metadatas (context, etc...)
+     * @return int                   0 < on error, 0 on success, 1 to replace standard code
+     * @throws Exception
+     */
+    public function printFieldListOption(array $parameters): int
+    {
+        global $extrafields, $langs;
+
+        if (strpos($parameters['context'], 'product_lotlist') !== false) {
+            $pictoPath = dol_buildpath('/gmao/img/gmao_color.png', 1);
+            $picto     = img_picto('', $pictoPath, '', 1, 0, 0, '', 'pictoModule');
+
+            $extrafields->attributes['product_lot']['label']['warehouse'] = $picto . $langs->transnoentities('Warehouse');
+        }
+
+        return 0;
+    }
+
+    /**
      * Overloading the printCommonFooter function : replacing the parent's function with the one below
      *
      * @param  array     $parameters Hook metadatas (context, etc...)
@@ -326,9 +372,10 @@ class ActionsGmao
     {
         global $conf, $langs, $object;
 
+
         if (strpos($parameters['context'], 'ticketcard') !== false) {
             if (getDolGlobalInt('TICKET_ENABLE_PUBLIC_INTERFACE')) {
-                require_once __DIR__ . '/../../saturne/lib/medias.lib.php';
+                dol_include_once('/saturne/lib/medias.lib.php');
 
                 $publicInterfaceUrl = dol_buildpath('public/ticket/view.php?track_id=' . $object->track_id . '&entity=' . $conf->entity, 3);
                 $out  = '<tr><td class="titlefield">' . $langs->trans('PublicInterface') . ' <a href="' . $publicInterfaceUrl . '" target="_blank"><i class="fas fa-qrcode"></i></a>';
@@ -355,7 +402,7 @@ class ActionsGmao
 
                 $moduleNameLowerCase = 'gmao';
 
-                require_once __DIR__ . '/../../saturne/lib/documents.lib.php';
+                dol_include_once('/saturne/lib/documents.lib.php');
 
                 $upload_dir = $conf->gmao->multidir_output[$object->entity ?? 1];
                 $objRef     = dol_sanitizeFileName($object->ref);
@@ -363,7 +410,7 @@ class ActionsGmao
                 $fileDir    = $upload_dir . '/' . $dirFiles;
                 $urlSource  = $_SERVER['PHP_SELF'] . '?id=' . $object->id;
 
-                $out = saturne_show_documents('gmao:GMAOTicketDocument', $dirFiles, $fileDir, $urlSource, $user->rights->ticket->write, $user->rights->ticket->delete, '', 1, 0, 0, 0, '', '', '', '', '', $object); ?>
+                $out = saturne_show_documents('gmao:GMAOTicketDocument', $dirFiles, $fileDir, $urlSource, $user->hasRight('ticket', 'write'), $user->hasRight('ticket', 'delete'), '', 1, 0, 0, 0, '', '', '', '', '', $object); ?>
 
                 <script>
                     jQuery('.fichehalfleft .div-table-responsive-no-min').first().append(<?php echo json_encode($out) ; ?>);

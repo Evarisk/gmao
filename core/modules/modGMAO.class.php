@@ -33,6 +33,11 @@ require_once DOL_DOCUMENT_ROOT . '/core/modules/DolibarrModules.class.php';
 class modGMAO extends DolibarrModules
 {
     /**
+     * @var int[] Minimum version of Saturne required by module, same format as need_dolibarr_version: checked by init() and by the Saturne index page
+     */
+    public $need_saturne_version = [23, 10, 1];
+
+    /**
      * Constructor. Define names, constants, directories, boxes, permissions
      *
      * @param DoliDB $db Database handler
@@ -42,8 +47,8 @@ class modGMAO extends DolibarrModules
         global $langs, $conf;
         $this->db = $db;
 
-        if (file_exists(__DIR__ . '/../../../saturne/lib/saturne_functions.lib.php')) {
-            require_once __DIR__ . '/../../../saturne/lib/saturne_functions.lib.php';
+        if (file_exists(dol_buildpath('/saturne/lib/saturne_functions.lib.php'))) {
+            dol_include_once('/saturne/lib/saturne_functions.lib.php');
             saturne_load_langs(['gmao@gmao']);
         } else {
             $this->error++;
@@ -67,7 +72,6 @@ class modGMAO extends DolibarrModules
         $this->familyinfo = ['Evarisk' => ['position' => '01', 'label' => 'Evarisk']];
         // Module label (no space allowed), used if translation string 'ModuleGMAOName' not found (GMAO is name of module)
         $this->name = preg_replace('/^mod/i', '', get_class($this));
-
         // Module description, used if translation string 'ModuleGMAODesc' not found (GMAO is name of module)
         $this->description = $langs->trans('GMAODescription');
         // Used only if file README.md and README-LL.md not found
@@ -78,7 +82,7 @@ class modGMAO extends DolibarrModules
         $this->editor_url  = 'https://evarisk.com';
 
         // Possible values for version are: 'development', 'experimental', 'dolibarr', 'dolibarr_deprecated' or a version string like 'x.y.z'
-        $this->version = '1.1.0';
+        $this->version = '1.2.0';
 
         // Url to the file with your last numberversion of this module
         //$this->url_last_version = 'http://www.example.com/versionmodule.txt';
@@ -120,7 +124,9 @@ class modGMAO extends DolibarrModules
             'hooks' => [
                 'ticketcard',
                 'gmaoadmindocuments',
-                'inventorycard'
+                'inventorycard',
+                'product_lotlist',
+                'productlotcard'
             ],
             // Set this to 1 if features of module are opened to external users
             'moduleforexternal' => 0
@@ -150,7 +156,8 @@ class modGMAO extends DolibarrModules
 
         // Prerequisites
         $this->phpmin                = [7, 4]; // Minimum version of PHP required by module
-        $this->need_dolibarr_version = [17, 0]; // Minimum version of Dolibarr required by module
+        $this->need_dolibarr_version = [23, 0]; // Minimum version of Dolibarr required by module
+        $this->max_dolibarr_version = [24, 0]; // Maximum version of Dolibarr supported by module
 
         // Messages at activation
         $this->warnings_activation     = []; // Warning to show when we activate module. array('always'='text') or array('FR'='textfr','MX'='textmx'...)
@@ -268,7 +275,17 @@ class modGMAO extends DolibarrModules
      */
     public function init($options = ''): int
     {
-        global $conf, $db, $langs;
+        global $conf, $db, $langs, $user;
+
+        // Saturne ships separately: refuse one older than need_saturne_version, it lacks functions this release calls
+        require_once DOL_DOCUMENT_ROOT . '/core/lib/admin.lib.php';
+        dol_include_once('/saturne/core/modules/modSaturne.class.php');
+        $saturneVersion = class_exists('modSaturne') ? (new modSaturne($this->db))->version : '';
+        if (versioncompare(explode('.', $saturneVersion), $this->need_saturne_version) < 0) {
+            $langs->load('admin'); // activateModuleDependNotSatisfied, not loaded when the Saturne index page runs init()
+            $this->error = $langs->trans('activateModuleDependNotSatisfied', $this->name, 'modSaturne >= ' . versiontostring($this->need_saturne_version) . ' (' . ($saturneVersion ?: '-') . ')', $this->name);
+            return -1;
+        }
 
         // Permissions
         $this->remove($options);
@@ -284,6 +301,14 @@ class modGMAO extends DolibarrModules
 
         addDocumentModel('gmaoticketdocument_odt', 'gmaoticketdocument', 'ODT templates', 'GMAO_GMAOTICKETDOCUMENT_ADDON_ODT_PATH');
 
+        // Create extrafields during init
+        include_once DOL_DOCUMENT_ROOT . '/core/class/extrafields.class.php';
+
+        $extra_fields = new ExtraFields($this->db);
+
+        $extra_fields->update('warehouse', 'WareHouse', 'link', '', 'product_lot', 0, 0, $this->numero . 10, ['options' => ['Entrepot:product/stock/class/entrepot.class.php' => NULL]], 1, $user->hasRight('stock', 'lire'), 1, '', '', '', 0, 'stocks', "isModEnabled('gmao') && isModEnabled('stock') && isModEnabled('productbatch')", 0, 0, ['csslist' => 'minwidth100 maxwidth300']);
+        $extra_fields->addExtraField('warehouse', 'WareHouse', 'link', $this->numero . 10, '', 'product_lot', 0, 0, '', ['options' => ['Entrepot:product/stock/class/entrepot.class.php' => NULL]], 1, $user->hasRight('stock', 'lire'), 1, '', '', 0, 'stocks', "isModEnabled('gmao')  && isModEnabled('stock') && isModEnabled('productbatch')", 0, 0, ['csslist' => 'minwidth100 maxwidth300']);
+        
         return $this->_init($sql, $options);
     }
 
