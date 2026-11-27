@@ -70,15 +70,18 @@ class ActionsGmao
     public function addHtmlHeader(array $parameters): int
     {
         if (strpos($parameters['context'], 'ticketcard') !== false) {
+            // saturne_asset_full_url() for the assets printed below: without a version, the browser keeps serving the previous release
+            dol_include_once('/saturne/lib/asset.lib.php');
+
             $resourcesRequired = [
                 'css' => '/saturne/css/saturne.min.css',
                 'js'  => '/saturne/js/saturne.min.js'
             ];
 
             $out  = '<!-- Includes CSS added by module saturne -->';
-            $out .= '<link rel="stylesheet" type="text/css" href="' . dol_buildpath($resourcesRequired['css'], 1) . '">';
+            $out .= '<link rel="stylesheet" type="text/css" href="' . saturne_asset_full_url($resourcesRequired['css']) . '">';
             $out .= '<!-- Includes JS added by module saturne -->';
-            $out .= '<script src="' . dol_buildpath($resourcesRequired['js'], 1) . '"></script>';
+            $out .= '<script src="' . saturne_asset_full_url($resourcesRequired['js']) . '"></script>';
 
             $this->resprints = $out;
         }
@@ -202,6 +205,7 @@ class ActionsGmao
                 $moduleName          = 'GMAO';
                 $moduleNameLowerCase = strtolower($moduleName);
                 $upload_dir          = $conf->gmao->multidir_output[$conf->entity ?? 1];
+                $permissiontoadd     = $user->hasRight('ticket', 'write');
 
                 // Action to generate pdf from odt file
                 require dol_buildpath('/saturne/core/tpl/documents/saturne_manual_pdf_generation_action.tpl.php');
