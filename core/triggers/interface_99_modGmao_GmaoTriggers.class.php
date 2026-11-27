@@ -51,7 +51,7 @@ class InterfaceGMAOTriggers extends DolibarrTriggers
         $this->name        = preg_replace('/^Interface/i', '', get_class($this));
         $this->family      = 'demo';
         $this->description = 'GMAO triggers';
-        $this->version     = '1.2.0';
+        $this->version     = '1.2.1';
         $this->picto       = 'gmao_color@gmao';
     }
 
